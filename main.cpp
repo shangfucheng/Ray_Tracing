@@ -68,11 +68,14 @@ void display(void){
     // glFlush();
     
     // image frame draw.
-    addColorsToPixels();
+    // addColorsToPixels();
+    image.pixels.push_back(glm::vec3(1.0f,0.2f,0.2f));
+    image.pixels.push_back(glm::vec3(1.0f,0.3f,0.3f));
+    image.pixels.push_back(glm::vec3(0.2f,0.2f,0.2f));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     image.draw();
     glutSwapBuffers();
-    
+    glFlush();
 }
 
 void saveScreenShot(const char* filename = "test.png"){

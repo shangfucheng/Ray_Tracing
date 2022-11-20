@@ -31,11 +31,15 @@ public:
         height = h;
         // pixels(w*h, 0.f);
     }
-    ~Image(){}
+    ~Image(){
+        pixels.clear();
+    }
 
     void init();
     void draw();
+    
 private:
+
     unsigned int fbo; // framebuffer object
     unsigned int tbo; // texture buffer object
 };
