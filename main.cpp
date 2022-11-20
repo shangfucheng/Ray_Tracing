@@ -57,9 +57,9 @@ void initialize(void){
 }
 
 void addColorsToPixels(){
-    image.pixels.push_back(glm::vec3(1.0f,0.2f,0.2f));
-    image.pixels.push_back(glm::vec3(1.0f,0.3f,0.3f));
-    image.pixels.push_back(glm::vec3(0.2f,0.2f,0.2f));
+    for(int i = 0; i < width*height; i++){
+        image.pixels.push_back(glm::vec3(0.0f+i/(width*height),0.0f+i/(width*height),0.0f+i/(width*height)));
+    }
 }
 void display(void){
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -68,10 +68,7 @@ void display(void){
     // glFlush();
     
     // image frame draw.
-    // addColorsToPixels();
-    image.pixels.push_back(glm::vec3(1.0f,0.2f,0.2f));
-    image.pixels.push_back(glm::vec3(1.0f,0.3f,0.3f));
-    image.pixels.push_back(glm::vec3(0.2f,0.2f,0.2f));
+    addColorsToPixels();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     image.draw();
     glutSwapBuffers();
