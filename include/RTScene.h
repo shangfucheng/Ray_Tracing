@@ -44,7 +44,8 @@ public:
     
     // The container of nodes will be the scene graph after we connect the nodes by setting the child_nodes.
     std::map< std::string, Node* > node;
-    
+    std::vector<Triangle> triangle_soup;//list of triangles in world or camera coordinate
+
     RTScene(){
         // the default scene graph already has one node named "world."
         node["world"] = new Node;
@@ -52,6 +53,7 @@ public:
     
     void init( void );
     // void draw( void );
+    void buildTriangleSoup();
     
     // destructor
     ~RTScene(){

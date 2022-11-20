@@ -11,7 +11,7 @@ RTScene.cpp contains the implementation of the draw command
 
 
 using namespace glm;
-void Scene::draw(void){
+void RTScene::buildTriangleSoup(void){
     // Pre-draw sequence: assign uniforms that are the same for all Geometry::draw call.  These uniforms include the camera view, proj, and the lights.  These uniform do not include modelview and material parameters.
     camera -> computeMatrices();
     shader -> view = camera -> view;
