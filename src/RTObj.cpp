@@ -22,20 +22,20 @@ that loads an obj file.
 
 #include "RTObj.h"
 
-void Obj::init(const char * filename){
+void RTObj::init(const char* filename) {
     std::vector< glm::vec3 > temp_vertices, vertices;
     std::vector< glm::vec3 > temp_normals, normals;
     std::vector< unsigned int > temp_vertexIndices, indices;
     std::vector< unsigned int > temp_normalIndices;
-    
+
     // load obj file
-    FILE * file = fopen( filename , "r" );
-    if( file == NULL ){
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
         std::cerr << "Cannot open file: " << filename << std::endl;
         exit(-1);
     }
     std::cout << "Loading " << filename << "...";
-    while (!feof(file)){
+    while (!feof(file)) {
         char lineHeader[128];
         // read the first word of the line
         int res = fscanf(file, "%s", lineHeader);
@@ -43,18 +43,20 @@ void Obj::init(const char * filename){
             break; // EOF = End Of File. Quit the loop.
 
         // else : parse lineHeader
-        if ( strcmp( lineHeader, "v" ) == 0 ){
+        if (strcmp(lineHeader, "v") == 0) {
             glm::vec3 vertex;
-            fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
+            fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
             temp_vertices.push_back(vertex);
-        }else if ( strcmp( lineHeader, "vn" ) == 0 ){
+        }
+        else if (strcmp(lineHeader, "vn") == 0) {
             glm::vec3 normal;
-            fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
+            fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
             temp_normals.push_back(normal);
-        }else if ( strcmp( lineHeader, "f" ) == 0 ){
+        }
+        else if (strcmp(lineHeader, "f") == 0) {
             //std::string vertex1, vertex2, vertex3;
             unsigned int vertexIndex[3], normalIndex[3];
-            fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2] );
+            fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
             temp_vertexIndices.push_back(vertexIndex[0]);
             temp_vertexIndices.push_back(vertexIndex[1]);
             temp_vertexIndices.push_back(vertexIndex[2]);
@@ -64,45 +66,25 @@ void Obj::init(const char * filename){
         }
     }
     std::cout << "done." << std::endl;
-    
+
     // post processing
     std::cout << "Processing data...";
     unsigned int n = temp_vertexIndices.size(); // #(triangles)*3
     vertices.resize(n);
     normals.resize(n);
     indices.resize(n);
-    for (unsigned int i = 0; i<n; i++){
+    for (unsigned int i = 0; i < n; i++) {
         indices[i] = i;
-        vertices[i] = temp_vertices[ temp_vertexIndices[i] - 1 ];
-        normals[i] = temp_normals[ temp_normalIndices[i] - 1 ];
+        vertices[i] = temp_vertices[temp_vertexIndices[i] - 1];
+        normals[i] = temp_normals[temp_normalIndices[i] - 1];
     }
-    std::cout << "done." << std::endl;
-    
-    // setting up buffers
-    std::cout << "Setting up buffers...";
-    glGenVertexArrays(1, &vao );
-    buffers.resize(3);
-    glGenBuffers(3, buffers.data());
-    glBindVertexArray(vao);
-    
-    // 0th attribute: position
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, n*sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
-    
-    // 1st attribute: normal
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, n*sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,(void*)0);
-    
-    // indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, n*sizeof(indices[0]), &indices[0], GL_STATIC_DRAW);
-    
-    count = n;
-    glBindVertexArray(0);
+    for (int i = 0; i < sizeof(indices) / 4; i += 3) {
+        Triangle tri;
+        tri.P = std::vector<glm::vec3>{vertices[i], vertices[i + 1], vertices[i + 2]};
+        tri.N = std::vector<glm::vec3>{ normals[i], normals[i + 1], normals[i + 2] };
+        tri.material = NULL;
+        elements.push_back(tri);
+    }
     std::cout << "done." << std::endl;
 }
 

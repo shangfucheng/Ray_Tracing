@@ -3,14 +3,16 @@ RTCube is subclass class of RTGeometry
 that represents a 3D cube.
 *****************************************************/
 #include "RTGeometry.h"
+#include <vector>
 #ifndef __RTCUBE_H__
 #define __RTCUBE_H__
 
 class RTCube : public RTGeometry {
 public:
-    void init(void){
+
+    void init(void) {
         // vertex positions
-        const GLfloat positions[24][3] ={
+        const GLfloat positions[24][3] = {
             // Front face
             { -0.5f, -0.5f, 0.5f },{ -0.5f, 0.5f, 0.5f },{ 0.5f, 0.5f, 0.5f },{ 0.5f, -0.5f, 0.5f },
             // Back face
@@ -25,7 +27,7 @@ public:
             { 0.5f, -0.5f, 0.5f },{ -0.5f, -0.5f, 0.5f },{ -0.5f, -0.5f, -0.5f },{ 0.5f, -0.5f, -0.5f }
         };
         // vertex normals
-        const GLfloat normals[24][3] {
+        const GLfloat normals[24][3] = {
             // Front face
             { 0.0f, 0.0f, 1.0f },{ 0.0f, 0.0f, 1.0f },{ 0.0f, 0.0f, 1.0f },{ 0.0f, 0.0f, 1.0f },
             // Back face
@@ -39,39 +41,33 @@ public:
             // Bottom face
             { 0.0f, -1.0f, 0.0f },{ 0.0f, -1.0f, 0.0f },{ 0.0f, -1.0f, 0.0f },{ 0.0f, -1.0f, 0.0f }
         };
-        for(int i = 0; i < positions.size(); i++){
+        // Cube indices
+        const GLuint indices[36] = {
+            0, 1, 2, 0, 2, 3, // Front face
+            4, 5, 6, 4, 6, 7, // Back face
+            8, 9, 10, 8, 10, 11, // Left face
+            12, 13, 14, 12, 14, 15, // Right face
+            16, 17, 18, 16, 18, 19, // Top face
+            20, 21, 22, 20, 22, 23 // Bottom face
+        };
+        for (int i = 0; i < sizeof(indices) / 4; i+=3) {
             Triangle tri;
-            tri->P.push_back(positions[i]);
-            tri->N.push_back(normals[i]);
+            tri.P = std::vector<glm::vec3>{
+                glm::vec3(positions[i][0], positions[i][1], positions[i][2]), 
+                glm::vec3(positions[i + 1][0], positions[i+1][1], positions[i+1][2]),
+                glm::vec3(positions[i + 2][0], positions[i+2][1], positions[i+2][2])
+            };
+            tri.N = std::vector<glm::vec3>{
+                glm::vec3(normals[i][0], normals[i][1], normals[i][2]),
+                glm::vec3(normals[i + 1][0], normals[i + 1][1], normals[i + 1][2]),
+                glm::vec3(normals[i + 2][0], normals[i + 2][1], normals[i + 2][2])
+            };
+            tri.material = NULL;
             elements.push_back(tri);
         }
-
-        glGenVertexArrays(1, &elements );
-        // buffers.resize(3); // recall that buffers is std::vector<GLuint>
-        glGenBuffers(1, elements.data());
-        glBindVertexArray(elements);
-        
-        // // 0th attribute: position
-        // glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(elements.size()), elements, GL_STATIC_DRAW);
-        // glEnableVertexAttribArray(0);
-        // glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
-        
-        // // 1st attribute: normal
-        // glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(tri->N), tri->N, GL_STATIC_DRAW);
-        // glEnableVertexAttribArray(1);
-        // glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,(void*)0);
-        
-        // // indices
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2]);
-        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-        
-        // count = sizeof(indices)/sizeof(indices[0]);
-        glBindVertexArray(0);
     }
-    
-    
+
+
 };
 
 #endif 

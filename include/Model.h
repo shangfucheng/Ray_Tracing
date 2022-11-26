@@ -2,6 +2,7 @@
 A model is a geometry with material.
 *****************************************************/
 #include "Geometry.h"
+#include "RTGeometry.h"
 #include "Material.h"
 
 #ifndef __MODEL_H__
@@ -9,6 +10,7 @@ A model is a geometry with material.
 
 struct Model {
     Geometry* geometry;
+    RTGeometry* RTgeometry;
     Material* material;
 };
 

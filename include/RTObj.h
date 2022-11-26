@@ -1,5 +1,5 @@
 /**************************************************
-RTObj is subclass class of RTGeometry
+RTObj is subclass class of Geometry
 that loads an obj file.
 *****************************************************/
 #define GLM_FORCE_RADIANS
@@ -10,8 +10,9 @@ that loads an obj file.
 
 class RTObj : public RTGeometry {
 public:
-    void init(const char * filename);
-        
+
+    void init(const char* filename);
+
 };
 
 #endif 

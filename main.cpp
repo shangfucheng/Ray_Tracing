@@ -13,6 +13,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include "Screenshot.h"
+#include "RTScene.h"
 #include "Scene.h"
 #include "Image.h"
 
@@ -21,6 +22,7 @@ static const int width = 800;
 static const int height = 600;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
+static RTScene RTscene;
 static Scene scene;
 static Image image(width,height);
 
@@ -50,27 +52,16 @@ void initialize(void){
     
     // Initialize scene
     scene.init();
+    RTscene.init();
     // Initialize image
-    image.init();
+    image.initialize();
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 }
 
-void addColorsToPixels(){
-    for(int i = 0; i < width*height; i++){
-        image.pixels.push_back(glm::vec3(0.0f+i/(width*height),0.0f+i/(width*height),0.0f+i/(width*height)));
-    }
-}
 void display(void){
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    // scene.draw();
-    // glutSwapBuffers();
-    // glFlush();
-    
-    // image frame draw.
-    addColorsToPixels();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    image.draw();
+    scene.draw();
     glutSwapBuffers();
     glFlush();
 }
@@ -82,11 +73,18 @@ void saveScreenShot(const char* filename = "test.png"){
     imag.save(filename);
 }
 
+void image_display() {
+    // assign color to image pixels.
+    image.pixel = std::vector<glm::vec3>(width*height, glm::vec3(0.3, 0.4, 0.5));
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    image.draw();
+    glutSwapBuffers();
+}
 
 void keyboard(unsigned char key, int x, int y){
     switch(key){
-        case 'm':
-            glutPostRedisplay();
+        case 'i':   // switch to ray tracing
+            image_display();
             break;
         case 27: // Escape to quit
             exit(0);

@@ -4,44 +4,26 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_normalized_axis.hpp>
-#include <math.h>
-
-#include <stdlib.h>
+#include <OpenGL/gl3.h>
+#include <OpenGL/glext.h>
+#include <GLUT/glut.h>
 #include <vector>
-#include <string>
-#include <map>
-#include <stack>
-
-#include "Camera.h"
-#include "SurfaceShader.h"
-#include "Light.h"
-#include "Geometry.h"
-#include "Material.h"
-#include "Model.h"
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
-class Image{
+class Image {
 public:
-    int width;
-    int height;
-    std::vector<glm::vec3> pixels; // RGB colors;
-    Image(const int w, const int h){
-        width = w;
-        height = h;
-        // pixels(w*h, 0.f);
-    }
-    ~Image(){
-        pixels.clear();
-    }
-
-    void init();
-    void draw();
-    
+	int width, height;
+	std::vector<glm::vec3> pixel;
+	Image(int w, int h) {
+		width = w;
+		height = h;
+	}
+	void initialize();
+	void draw();
 private:
-
-    unsigned int fbo; // framebuffer object
-    unsigned int tbo; // texture buffer object
+	unsigned int fbo; // frame buffer object
+	unsigned int tbo; // texture buffer object
 };
 
-#endif
+#endif 

@@ -1,5 +1,5 @@
 /**************************************************
-
+RTScene class
 *****************************************************/
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -23,9 +23,9 @@
 #ifndef __RTSCENE_H__
 #define __RTSCENE_H__
 
-class Node {
+class RTNode {
 public:
-    std::vector< Node* > childnodes;
+    std::vector< RTNode* > childnodes;
     std::vector< glm::mat4 > childtransforms;
     std::vector< Model* > models;
     std::vector< glm::mat4 > modeltransforms;
@@ -37,46 +37,44 @@ public:
     SurfaceShader* shader;
     // The following are containers of objects serving as the object palettes.
     // The containers store pointers so that they can also store derived class objects.
-    std::map< std::string, Geometry* > geometry;
+    std::map< std::string, RTGeometry* > RTgeometry;
     std::map< std::string, Material* > material;
-    std::map< std::string, Model* > model;
+    std::map< std::string, Model* > RTmodel;
     std::map< std::string, Light* > light;
-    
-    // The container of nodes will be the scene graph after we connect the nodes by setting the child_nodes.
-    std::map< std::string, Node* > node;
-    std::vector<Triangle> triangle_soup;//list of triangles in world or camera coordinate
 
-    RTScene(){
+    // The container of nodes will be the scene graph after we connect the nodes by setting the child_nodes.
+    std::map< std::string, RTNode* > node;
+    std::vector<Triangle> triangle_soup;//list of triangles in world or camera coordinate
+    RTScene() {
         // the default scene graph already has one node named "world."
-        node["world"] = new Node;
+        node["world"] = new RTNode;
     }
-    
-    void init( void );
-    // void draw( void );
+
+    void init(void);
     void buildTriangleSoup();
-    
+
     // destructor
-    ~RTScene(){
+    ~RTScene() {
         // The containers of pointers own the object pointed to by the pointers.
         // All the objects should be deleted when the object palette is destructed.
         // light
-        for(std::pair<std::string,Light*> entry : light ){
+        for (std::pair<std::string, Light*> entry : light) {
             delete entry.second;
         }
         // geometry
-        for(std::pair<std::string,Geometry*> entry : geometry ){
+        for (std::pair<std::string, RTGeometry*> entry : RTgeometry) {
             delete entry.second;
         }
         // material
-        for(std::pair<std::string,Material*> entry : material ){
+        for (std::pair<std::string, Material*> entry : material) {
             delete entry.second;
         }
         // model
-        for(std::pair<std::string,Model*> entry : model ){
+        for (std::pair<std::string, Model*> entry : RTmodel) {
             delete entry.second;
         }
         // model
-        for(std::pair<std::string,Node*> entry : node ){
+        for (std::pair<std::string, RTNode*> entry : node) {
             delete entry.second;
         }
         delete camera;
