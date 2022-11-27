@@ -18,8 +18,8 @@
 #include "Image.h"
 #include "Ray.h"
 
-static const int width = 100;
-static const int height = 100;
+static const int width = 400;
+static const int height = 400;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static RTScene RTscene;
@@ -107,6 +107,7 @@ void keyboard(unsigned char key, int x, int y){
         case 'r':
             scene.camera -> aspect_default = float(glutGet(GLUT_WINDOW_WIDTH))/float(glutGet(GLUT_WINDOW_HEIGHT));
             scene.camera -> reset();
+            RayTracing = false;
             glutPostRedisplay();
             break;
         case 'a':
@@ -130,6 +131,15 @@ void keyboard(unsigned char key, int x, int y){
             }
             break;
         case 'l':
+            if(!RayTracing) {
+                scene.shader -> enablelighting = !(scene.shader -> enablelighting);
+                glutPostRedisplay();
+            }
+            else {
+                std::cout << "light mode for RT" << std::endl;
+                RTscene.shader -> enablelighting = !(RTscene.shader -> enablelighting);
+                image_display();
+            }
             scene.shader -> enablelighting = !(scene.shader -> enablelighting);
             glutPostRedisplay();
             break;
