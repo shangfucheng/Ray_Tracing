@@ -78,11 +78,10 @@ void RTObj::init(const char* filename) {
         vertices[i] = temp_vertices[temp_vertexIndices[i] - 1];
         normals[i] = temp_normals[temp_normalIndices[i] - 1];
     }
-    for (int i = 0; i < sizeof(indices) / 4; i += 3) {
+    for (int i = 0; i < indices.size(); i += 3) {
         Triangle tri;
-        tri.P = std::vector<glm::vec3>{vertices[i], vertices[i + 1], vertices[i + 2]};
-        tri.N = std::vector<glm::vec3>{ normals[i], normals[i + 1], normals[i + 2] };
-        tri.material = NULL;
+        tri.P = std::vector<glm::vec3>{vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]};
+        tri.N = std::vector<glm::vec3>{ normals[indices[i]], normals[indices[i + 1]], normals[indices[i + 2]] };
         elements.push_back(tri);
     }
     std::cout << "done." << std::endl;

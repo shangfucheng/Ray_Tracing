@@ -43,43 +43,16 @@ public:
     std::map< std::string, Light* > light;
 
     // The container of nodes will be the scene graph after we connect the nodes by setting the child_nodes.
-    std::map< std::string, RTNode* > node;
+    std::map< std::string, RTNode* > RTnode;
     std::vector<Triangle> triangle_soup;//list of triangles in world or camera coordinate
     RTScene() {
         // the default scene graph already has one node named "world."
-        node["world"] = new RTNode;
+        RTnode["world"] = new RTNode;
     }
 
     void init(void);
     void buildTriangleSoup();
 
-    // destructor
-    ~RTScene() {
-        // The containers of pointers own the object pointed to by the pointers.
-        // All the objects should be deleted when the object palette is destructed.
-        // light
-        for (std::pair<std::string, Light*> entry : light) {
-            delete entry.second;
-        }
-        // geometry
-        for (std::pair<std::string, RTGeometry*> entry : RTgeometry) {
-            delete entry.second;
-        }
-        // material
-        for (std::pair<std::string, Material*> entry : material) {
-            delete entry.second;
-        }
-        // model
-        for (std::pair<std::string, Model*> entry : RTmodel) {
-            delete entry.second;
-        }
-        // model
-        for (std::pair<std::string, RTNode*> entry : node) {
-            delete entry.second;
-        }
-        delete camera;
-        delete shader;
-    }
 };
 
 #endif 

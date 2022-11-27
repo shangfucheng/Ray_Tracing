@@ -1,5 +1,5 @@
 /**************************************************
-Scene.cpp contains the implementation of the draw command
+RTScene.cpp contains the implementation of the draw command
 *****************************************************/
 #include "RTScene.h"
 #include "RTCube.h"
@@ -28,7 +28,7 @@ void RTScene::buildTriangleSoup() {
     std::stack < mat4 >  matrix_stack; // matrix_stack during the depth-first search while loop.
 
     // Initialize the current state variable for DFS
-    RTNode* cur = node["world"]; // root of the tree
+    RTNode* cur = RTnode["world"]; // root of the tree
     
     // current modelview during the depth first search.  
     // Initially, we are at the "world" node, whose modelview matrix is just camera's view matrix.
@@ -40,7 +40,7 @@ void RTScene::buildTriangleSoup() {
     // Compute total number of connectivities in the graph; this would be an upper bound for
     // the stack size in the depth first search over the directed acyclic graph
     int total_number_of_edges = 0;
-    for (const auto& n : node) total_number_of_edges += n.second->childnodes.size();
+    for (const auto& n : RTnode) total_number_of_edges += n.second->childnodes.size();
 
     while (!dfs_stack.empty()) {
         // Detect whether the search runs into infinite loop by checking whether the stack is longer than the number of edges in the graph.

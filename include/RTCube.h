@@ -4,6 +4,7 @@ that represents a 3D cube.
 *****************************************************/
 #include "RTGeometry.h"
 #include <vector>
+#include <iostream>
 #ifndef __RTCUBE_H__
 #define __RTCUBE_H__
 
@@ -50,17 +51,17 @@ public:
             16, 17, 18, 16, 18, 19, // Top face
             20, 21, 22, 20, 22, 23 // Bottom face
         };
-        for (int i = 0; i < sizeof(indices) / 4; i+=3) {
+        for (int i = 0; i < sizeof(indices)/4; i+=3) {
             Triangle tri;
             tri.P = std::vector<glm::vec3>{
-                glm::vec3(positions[i][0], positions[i][1], positions[i][2]), 
-                glm::vec3(positions[i + 1][0], positions[i+1][1], positions[i+1][2]),
-                glm::vec3(positions[i + 2][0], positions[i+2][1], positions[i+2][2])
+                glm::vec3(positions[indices[i]][0], positions[indices[i]][1], positions[indices[i]][2]),
+                glm::vec3(positions[indices[i+1]][0], positions[indices[i + 1]][1], positions[indices[i + 1]][2]),
+                glm::vec3(positions[indices[i+2]][0], positions[indices[i + 2]][1], positions[indices[i + 2]][2])
             };
             tri.N = std::vector<glm::vec3>{
-                glm::vec3(normals[i][0], normals[i][1], normals[i][2]),
-                glm::vec3(normals[i + 1][0], normals[i + 1][1], normals[i + 1][2]),
-                glm::vec3(normals[i + 2][0], normals[i + 2][1], normals[i + 2][2])
+                glm::vec3(normals[indices[i]][0], normals[indices[i]][1], normals[indices[i]][2]),
+                glm::vec3(normals[indices[i + 1]][0], normals[indices[i + 1]][1], normals[indices[i + 1]][2]),
+                glm::vec3(normals[indices[i + 2]][0], normals[indices[i + 2]][1], normals[indices[i + 2]][2])
             };
             tri.material = NULL;
             elements.push_back(tri);

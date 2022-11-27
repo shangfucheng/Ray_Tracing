@@ -16,10 +16,10 @@
 #include "RTScene.h"
 #include "Scene.h"
 #include "Image.h"
+#include "Ray.h"
 
-
-static const int width = 800;
-static const int height = 600;
+static const int width = 300;
+static const int height = 500;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static RTScene RTscene;
@@ -53,8 +53,10 @@ void initialize(void){
     // Initialize scene
     scene.init();
     RTscene.init();
+    RTscene.buildTriangleSoup();
     // Initialize image
     image.initialize();
+    
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 }
@@ -74,11 +76,14 @@ void saveScreenShot(const char* filename = "test.png"){
 }
 
 void image_display() {
-    // assign color to image pixels.
-    image.pixel = std::vector<glm::vec3>(width*height, glm::vec3(0.3, 0.4, 0.5));
+    Camera cam;
+    cam.reset();
+    cam.computeMatrices();
+    RayTracer::Raytrace(cam, RTscene, image);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     image.draw();
     glutSwapBuffers();
+    std::cout << "raytracing" << std::endl;
 }
 
 void keyboard(unsigned char key, int x, int y){
