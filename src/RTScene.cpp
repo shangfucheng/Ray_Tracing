@@ -60,7 +60,7 @@ void RTScene::buildTriangleSoup() {
             // shader->modelview = cur_VM * cur->modeltransforms[i]; 
 
             for (auto j : (cur->models[i])->RTgeometry->elements) {
-                j.material = (cur->models[i])->material;
+                j->material = (cur->models[i])->material;
                 triangle_soup.push_back(j);
             }
            

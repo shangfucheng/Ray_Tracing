@@ -17,9 +17,9 @@ public:
     float dist; // distance to the source of ray
     float intersect; // 0 means no intersect, 1 means intersect
     Intersection() {
-        P = glm::vec3(0);
-        N = glm::vec3(0);
-        V = glm::vec3(0);
+        P = glm::vec3(2);
+        N = glm::vec3(2);
+        V = glm::vec3(2);
         triangle = nullptr;
         dist = std::numeric_limits<float>::infinity();
         intersect = 0.0;

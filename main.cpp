@@ -18,13 +18,14 @@
 #include "Image.h"
 #include "Ray.h"
 
-static const int width = 300;
-static const int height = 500;
+static const int width = 100;
+static const int height = 100;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static RTScene RTscene;
 static Scene scene;
 static Image image(width,height);
+static bool RayTracing=false;
 
 
 #include "hw3AutoScreenshots.h"
@@ -75,20 +76,23 @@ void saveScreenShot(const char* filename = "test.png"){
     imag.save(filename);
 }
 
-void image_display() {
-    Camera cam;
-    cam.reset();
-    cam.computeMatrices();
-    RayTracer::Raytrace(cam, RTscene, image);
+void image_display(void) {
+    
+    // Camera cam;
+    // cam.reset();
+    // cam.computeMatrices();
+    RayTracer::Raytrace(*RTscene.camera, RTscene, image);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     image.draw();
     glutSwapBuffers();
+    glFlush();
     std::cout << "raytracing" << std::endl;
 }
 
 void keyboard(unsigned char key, int x, int y){
     switch(key){
         case 'i':   // switch to ray tracing
+            RayTracing = true;
             image_display();
             break;
         case 27: // Escape to quit
@@ -106,12 +110,24 @@ void keyboard(unsigned char key, int x, int y){
             glutPostRedisplay();
             break;
         case 'a':
-            scene.camera -> zoom(0.9f);
-            glutPostRedisplay();
+            if(!RayTracing) {
+                scene.camera -> zoom(0.9f);
+                glutPostRedisplay();
+            }
+            else {
+                RTscene.camera -> zoom(0.9f);
+                image_display();
+            }
             break;
         case 'z':
-            scene.camera -> zoom(1.1f);
-            glutPostRedisplay();
+            if(!RayTracing) {
+                scene.camera -> zoom(1.1f);
+                glutPostRedisplay();
+            }
+            else {
+                RTscene.camera -> zoom(1.1f);
+                image_display();
+            }
             break;
         case 'l':
             scene.shader -> enablelighting = !(scene.shader -> enablelighting);
@@ -129,20 +145,44 @@ void keyboard(unsigned char key, int x, int y){
 void specialKey(int key, int x, int y){
     switch (key) {
         case GLUT_KEY_UP: // up
-            scene.camera -> rotateUp(-10.0f);
-            glutPostRedisplay();
+            if(!RayTracing) {
+                scene.camera -> rotateUp(-10.0f);
+                glutPostRedisplay();
+            }
+            else {
+                RTscene.camera -> rotateUp(-10.0f);
+                image_display();
+            }
             break;
         case GLUT_KEY_DOWN: // down
-            scene.camera -> rotateUp(10.0f);
-            glutPostRedisplay();
+            if(!RayTracing) {
+                scene.camera -> rotateUp(10.0f);
+                glutPostRedisplay();
+            }
+            else {
+                RTscene.camera -> rotateUp(10.0f);
+                image_display();
+            }
             break;
         case GLUT_KEY_RIGHT: // right
-            scene.camera -> rotateRight(-10.0f);
-            glutPostRedisplay();
+            if(!RayTracing) {
+                scene.camera -> rotateRight(-10.0f);
+                glutPostRedisplay();
+            }
+            else {
+                RTscene.camera -> rotateRight(-10.0f);
+                image_display();
+            }
             break;
         case GLUT_KEY_LEFT: // left
-            scene.camera -> rotateRight(10.0f);
-            glutPostRedisplay();
+            if(!RayTracing) {
+                scene.camera -> rotateRight(10.0f);
+                glutPostRedisplay();
+            }
+            else {
+                RTscene.camera -> rotateRight(10.0f);
+                image_display();
+            }
             break;
     }
 }
@@ -172,7 +212,14 @@ int main(int argc, char** argv)
     // END CREATE WINDOW
 
     initialize();
-    glutDisplayFunc(display);
+    if(RayTracing) {
+        glutDisplayFunc(image_display);
+        std::cout << "image display" << std::endl;
+    }
+    else{
+        glutDisplayFunc(display);
+        std::cout << "Scene display" << std::endl;
+    }
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(specialKey);
     
