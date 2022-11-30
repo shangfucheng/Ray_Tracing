@@ -13,15 +13,15 @@ public:
     glm::vec3 P; // position of the intersection
     glm::vec3 N; // surface normal
     glm::vec3 V; // direction to incoming ray
-    Triangle* triangle; // pointer to geometric primitive (and material info)
+    Triangle triangle; // pointer to geometric primitive (and material info)
     float dist; // distance to the source of ray
     float intersect; // 0 means no intersect, 1 means intersect
     Intersection() {
-        P = glm::vec3(2);
-        N = glm::vec3(2);
-        V = glm::vec3(2);
-        triangle = nullptr;
-        dist = std::numeric_limits<float>::infinity();
+        P = glm::vec3(0.f);
+        N = glm::vec3(0.f);
+        V = glm::vec3(0.f);
+        
+        dist = INFINITY;//std::numeric_limits<float>::infinity();
         intersect = 0.0;
     }
 };

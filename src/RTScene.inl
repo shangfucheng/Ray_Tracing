@@ -4,6 +4,7 @@ RTScene.inl contains the definition of the scene graph
 #include "RTScene.h"
 #include "RTCube.h"
 #include "RTObj.h"
+#include "RTModel.h"
 
 using namespace glm;
 void RTScene::init(void) {
@@ -93,8 +94,8 @@ void RTScene::init(void) {
     RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
     RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, -0.4f)));
 
-    RTnode["table leg"]->models.push_back(RTmodel["table piece"]);
-    RTnode["table leg"]->modeltransforms.push_back(translate(vec3(0.0f, 0.5f, 0.0f)) * scale(vec3(0.2f, 1.0f, 0.2f)));
+    // RTnode["table leg"]->models.push_back(RTmodel["table piece"]);
+    // RTnode["table leg"]->modeltransforms.push_back(translate(vec3(0.0f, 0.5f, 0.0f)) * scale(vec3(0.2f, 1.0f, 0.2f)));
 
     RTnode["table top"]->models.push_back(RTmodel["table piece"]);
     RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.0f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));

@@ -2,10 +2,14 @@
 Image.cpp contains the implementation Image class
 *****************************************************/
 #include "Image.h"
+#include <iostream>
 #include <vector>
 
 void Image::initialize() {
-	pixel = std::vector<glm::vec3>(width * height, glm::vec3(0.f));
+	pixel = std::vector<glm::vec3>(width*height,glm::vec3(0.f));
+	std::cout << "pixel size: " << pixel.size() << std::endl;
+	// pixel = std::vector<std::vector<glm::vec3>>(width, std::vector<glm::vec3>(height,glm::vec3(1.0f)));
+	// std::cout << "pixel size: " << pixel.size() << " x " << pixel[0].size() << std::endl;
 	glGenFramebuffers(1, &fbo);
 	glGenTextures(1, &tbo);
 }

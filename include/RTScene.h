@@ -12,7 +12,7 @@ RTScene class
 #include <string>
 #include <map>
 #include <stack>
-
+#include <limits>
 #include "Camera.h"
 #include "SurfaceShader.h"
 #include "Light.h"
@@ -44,16 +44,12 @@ public:
 
     // The container of nodes will be the scene graph after we connect the nodes by setting the child_nodes.
     std::map< std::string, RTNode* > RTnode;
-    std::vector<Triangle*> triangle_soup;//list of triangles in world or camera coordinate
+    std::vector<Triangle> triangle_soup;//list of triangles in world or camera coordinate
     RTScene() {
         // the default scene graph already has one node named "world."
         RTnode["world"] = new RTNode;
     }
-    // ~RTScene(){
-    //     for(Triangle* tri :triangle_soup){
-    //         delete tri;
-    //     }
-    // }
+   
     void init(void);
     void buildTriangleSoup();
 

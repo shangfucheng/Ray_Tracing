@@ -77,7 +77,7 @@ void saveScreenShot(const char* filename = "test.png"){
 
 void image_display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    RayTracer::Raytrace(*RTscene.camera, RTscene, image);
+    RayTracer::Raytrace(RTscene.camera, RTscene, image);
     image.draw();
     glutSwapBuffers();
     glFlush();

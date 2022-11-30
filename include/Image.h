@@ -15,6 +15,7 @@ class Image {
 public:
 	int width, height;
 	std::vector<glm::vec3> pixel;
+	// std::vector<std::vector<glm::vec3>> pixel;
 	Image(int w, int h) {
 		width = w;
 		height = h;

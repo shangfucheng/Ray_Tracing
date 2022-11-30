@@ -32,7 +32,7 @@ void RTScene::buildTriangleSoup() {
     
     // current modelview during the depth first search.  
     // Initially, we are at the "world" node, whose modelview matrix is just camera's view matrix.
-    mat4 cur_VM = camera->view; 
+    mat4 cur_VM =mat4(1.0f);//camera->view; 
 
     dfs_stack.push(cur);
     matrix_stack.push(cur_VM);
@@ -61,22 +61,22 @@ void RTScene::buildTriangleSoup() {
 
             shader -> modelview = cur_VM * cur->modeltransforms[i]; // Without updating cur_VM, modelview would just be camera's view matrix.
             shader -> material  = ( cur -> models[i] ) -> material;
-            shader -> setUniforms();
+            // shader -> setUniforms();
             // std::cout << cur_VM[0].x << " " << cur_VM[0].y << " " << cur_VM[0].z << std::endl;
             // std::cout << cur->modeltransforms[i][0].x << " " << cur->modeltransforms[i][0].y << " " << cur->modeltransforms[i][0].z << std::endl;
             // std::cout << shader -> modelview[0].x << " " << shader -> modelview[0].y << " " << shader -> modelview[0].z << std::endl;
 
-            for (auto &j : (cur->models[i])->RTgeometry->elements) {
-                j->material = shader -> material;
+            for (Triangle& j : (cur->models[i])->RTgeometry->elements) {
+                j.material = shader -> material;
                 // std::cout << j->P[0].x <<" " << j->P[0].y <<" " << j->P[0].z<< std::endl;
-                j->position_update( shader->modelview) ;
-                // j->P[0] = normalize(mat3(inverse(shader->modelview))*j->P[0]);
-                // j->P[1] = normalize(mat3(inverse(shader->modelview))*j->P[1]);
-                // j->P[2] = normalize(mat3(inverse(shader->modelview))*j->P[2]);
-                // j->N[0] = normalize(inverse(transpose(mat3(shader->modelview)))*j->N[0]);
-                // j->N[1] = normalize(inverse(transpose(mat3(shader->modelview)))*j->N[1]);
-                // j->N[2] = normalize(inverse(transpose(mat3(shader->modelview)))*j->N[2]);
-                std::cout << j->P[0].x <<" " << j->P[0].y <<" " << j->P[0].z<< std::endl;
+                // j.position_update( cur_VM) ;
+                j.P[0] = normalize(mat3(shader->modelview)*j.P[0]);
+                j.P[1] = normalize(mat3(shader->modelview)*j.P[1]);
+                j.P[2] = normalize(mat3(shader->modelview)*j.P[2]);
+                j.N[0] = normalize(inverse(transpose(mat3(shader->modelview)))*j.N[0]);
+                j.N[1] = normalize(inverse(transpose(mat3(shader->modelview)))*j.N[1]);
+                j.N[2] = normalize(inverse(transpose(mat3(shader->modelview)))*j.N[2]);
+                std::cout << j.P[0].x <<" " << j.P[0].y <<" " << j.P[0].z<< std::endl;
 
                 triangle_soup.push_back(j);
             }
