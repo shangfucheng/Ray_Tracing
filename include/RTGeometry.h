@@ -1,5 +1,6 @@
 #include <vector>
 #include "Triangle.h"
+#include <limits>
 #ifndef __RTGEOMETRY_H__
 #define __RTGEOMETRY_H__
 class RTGeometry {

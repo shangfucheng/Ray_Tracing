@@ -16,53 +16,53 @@ void RTScene::init(void) {
     // RTgeometry["bunny"]->init("models/bunny.obj");
 
     // Create a material palette
-    material["wood"] = new Material;
-    material["wood"]->ambient = vec4(0.1f, 0.1f, 0.1f, 1.0f);
-    material["wood"]->diffuse = vec4(0.3f, 0.15f, 0.1f, 1.0f);
-    material["wood"]->specular = vec4(0.3f, 0.15f, 0.1f, 1.0f);
-    material["wood"]->shininess = 100.0f;
+    RTmaterial["wood"] = new Material;
+    RTmaterial["wood"]->ambient = vec4(0.1f, 0.1f, 0.1f, 1.0f);
+    RTmaterial["wood"]->diffuse = vec4(0.3f, 0.15f, 0.1f, 1.0f);
+    RTmaterial["wood"]->specular = vec4(0.3f, 0.15f, 0.1f, 1.0f);
+    RTmaterial["wood"]->shininess = 100.0f;
 
-    material["ceramic"] = new Material;
-    material["ceramic"]->ambient = vec4(0.02f, 0.07f, 0.2f, 1.0f);
-    material["ceramic"]->diffuse = vec4(0.1f, 0.25f, 0.7f, 1.0f);
-    material["ceramic"]->specular = vec4(0.9f, 0.9f, 0.9f, 1.0f);
-    material["ceramic"]->shininess = 150.0f;
+    RTmaterial["ceramic"] = new Material;
+    RTmaterial["ceramic"]->ambient = vec4(0.02f, 0.07f, 0.2f, 1.0f);
+    RTmaterial["ceramic"]->diffuse = vec4(0.1f, 0.25f, 0.7f, 1.0f);
+    RTmaterial["ceramic"]->specular = vec4(0.9f, 0.9f, 0.9f, 1.0f);
+    RTmaterial["ceramic"]->shininess = 150.0f;
 
-    material["silver"] = new Material;
-    material["silver"]->ambient = vec4(0.1f, 0.1f, 0.1f, 1.0f);
-    material["silver"]->diffuse = vec4(0.2f, 0.2f, 0.2f, 1.0f);
-    material["silver"]->specular = vec4(0.9f, 0.9f, 0.9f, 1.0f);
-    material["silver"]->shininess = 50.0f;
+    RTmaterial["silver"] = new Material;
+    RTmaterial["silver"]->ambient = vec4(0.1f, 0.1f, 0.1f, 1.0f);
+    RTmaterial["silver"]->diffuse = vec4(0.2f, 0.2f, 0.2f, 1.0f);
+    RTmaterial["silver"]->specular = vec4(0.9f, 0.9f, 0.9f, 1.0f);
+    RTmaterial["silver"]->shininess = 50.0f;
 
-    material["turquoise"] = new Material;
-    material["turquoise"]->ambient = vec4(0.1f, 0.2f, 0.17f, 1.0f);
-    material["turquoise"]->diffuse = vec4(0.2f, 0.375f, 0.35f, 1.0f);
-    material["turquoise"]->specular = vec4(0.3f, 0.3f, 0.3f, 1.0f);
-    material["turquoise"]->shininess = 100.0f;
+    RTmaterial["turquoise"] = new Material;
+    RTmaterial["turquoise"]->ambient = vec4(0.1f, 0.2f, 0.17f, 1.0f);
+    RTmaterial["turquoise"]->diffuse = vec4(0.2f, 0.375f, 0.35f, 1.0f);
+    RTmaterial["turquoise"]->specular = vec4(0.3f, 0.3f, 0.3f, 1.0f);
+    RTmaterial["turquoise"]->shininess = 100.0f;
 
-    material["bulb"] = new Material;
-    material["bulb"]->ambient = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    material["bulb"]->diffuse = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    material["bulb"]->specular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    material["bulb"]->emision = vec4(1.0f, 0.2f, 0.1f, 1.0f);
-    material["bulb"]->shininess = 200.0f;
+    RTmaterial["bulb"] = new Material;
+    RTmaterial["bulb"]->ambient = vec4(0.5f, 0.5f, 0.0f, 1.0f);
+    RTmaterial["bulb"]->diffuse = vec4(0.5f, 0.5f, 0.0f, 1.0f);
+    RTmaterial["bulb"]->specular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    RTmaterial["bulb"]->emision = vec4(1.0f, 0.2f, 0.1f, 1.0f);
+    RTmaterial["bulb"]->shininess = 200.0f;
 
-    // Create a model palette
-    // RTmodel["teapot1"] = new Model;
+    //Create a model palette
+    // RTmodel["teapot1"] = new RTModel;
     // RTmodel["teapot1"]->RTgeometry = RTgeometry["teapot"];
-    // RTmodel["teapot1"]->material = material["silver"];
-    // RTmodel["teapot2"] = new Model;
+    // RTmodel["teapot1"]->material = RTmaterial["silver"];
+    // RTmodel["teapot2"] = new RTModel;
     // RTmodel["teapot2"]->RTgeometry = RTgeometry["teapot"];
-    // RTmodel["teapot2"]->material = material["ceramic"];
-    RTmodel["table piece"] = new Model;
+    // RTmodel["teapot2"]->material = RTmaterial["ceramic"];
+    RTmodel["table piece"] = new RTModel;
     RTmodel["table piece"]->RTgeometry = RTgeometry["cube"];
-    RTmodel["table piece"]->material = material["wood"];
-    // RTmodel["bunny"] = new Model;
+    RTmodel["table piece"]->material = RTmaterial["wood"];
+    // RTmodel["bunny"] = new RTModel;
     // RTmodel["bunny"]->RTgeometry = RTgeometry["bunny"];
-    // RTmodel["bunny"]->material = material["turquoise"];
-    RTmodel["bulb"] = new Model;
+    // RTmodel["bunny"]->material = RTmaterial["turquoise"];
+    RTmodel["bulb"] = new RTModel;
     RTmodel["bulb"]->RTgeometry = RTgeometry["cube"];
-    RTmodel["bulb"]->material = material["bulb"];
+    RTmodel["bulb"]->material = RTmaterial["bulb"];
 
     // Create a light palette
     light["sun"] = new Light;
@@ -98,23 +98,23 @@ void RTScene::init(void) {
 
     RTnode["table top"]->models.push_back(RTmodel["table piece"]);
     RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.0f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));
-    /*RTnode["table top"]->childnodes.push_back(RTnode["teapot1"]);
-    RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f)));
-    RTnode["table top"]->childnodes.push_back(RTnode["teapot2"]);
-    RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-120.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
+    // RTnode["table top"]->childnodes.push_back(RTnode["teapot1"]);
+    // RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f)));
+    // RTnode["table top"]->childnodes.push_back(RTnode["teapot2"]);
+    // RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-120.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
 
-    RTnode["teapot1"]->models.push_back(RTmodel["teapot1"]);
-    RTnode["teapot1"]->modeltransforms.push_back(scale(vec3(0.5f)));
-    RTnode["teapot2"]->models.push_back(RTmodel["teapot2"]);
-    RTnode["teapot2"]->modeltransforms.push_back(scale(vec3(1.0f, 1.5f, 1.0f)) * scale(vec3(0.5f)));
+    // RTnode["teapot1"]->models.push_back(RTmodel["teapot1"]);
+    // RTnode["teapot1"]->modeltransforms.push_back(scale(vec3(0.5f)));
+    // RTnode["teapot2"]->models.push_back(RTmodel["teapot2"]);
+    // RTnode["teapot2"]->modeltransforms.push_back(scale(vec3(1.0f, 1.5f, 1.0f)) * scale(vec3(0.5f)));
 
-    RTnode["bunny"]->models.push_back(RTmodel["bunny"]);
-    RTnode["bunny"]->modeltransforms.push_back(scale(vec3(0.8f)) * translate(vec3(0.0f, 1.0f, 0.0f)));*/
+    // RTnode["bunny"]->models.push_back(RTmodel["bunny"]);
+    // RTnode["bunny"]->modeltransforms.push_back(scale(vec3(0.8f)) * translate(vec3(0.0f, 1.0f, 0.0f)));
 
     RTnode["world"]->childnodes.push_back(RTnode["table"]);
     RTnode["world"]->childtransforms.push_back(mat4(1.0f));
-    //RTnode["world"]->childnodes.push_back(RTnode["bunny"]);
-    //RTnode["world"]->childtransforms.push_back(translate(vec3(-1.8f, 0.0f, 0.0f)) * rotate(90.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
+    // RTnode["world"]->childnodes.push_back(RTnode["bunny"]);
+    // RTnode["world"]->childtransforms.push_back(translate(vec3(-1.8f, 0.0f, 0.0f)) * rotate(90.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
     RTnode["world"]->models.push_back(RTmodel["bulb"]);
     RTnode["world"]->modeltransforms.push_back(translate(vec3(0.0f, 2.0f, 0.0f)) * scale(vec3(0.1f)));
 

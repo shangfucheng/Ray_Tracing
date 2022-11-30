@@ -18,8 +18,8 @@
 #include "Image.h"
 #include "Ray.h"
 
-static const int width = 400;
-static const int height = 400;
+static const int width = 200;
+static const int height = 200;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static RTScene RTscene;
@@ -57,7 +57,6 @@ void initialize(void){
     RTscene.buildTriangleSoup();
     // Initialize image
     image.initialize();
-    
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 }
@@ -77,16 +76,11 @@ void saveScreenShot(const char* filename = "test.png"){
 }
 
 void image_display(void) {
-    
-    // Camera cam;
-    // cam.reset();
-    // cam.computeMatrices();
-    RayTracer::Raytrace(*RTscene.camera, RTscene, image);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    RayTracer::Raytrace(*RTscene.camera, RTscene, image);
     image.draw();
     glutSwapBuffers();
     glFlush();
-    std::cout << "raytracing" << std::endl;
 }
 
 void keyboard(unsigned char key, int x, int y){
@@ -136,12 +130,9 @@ void keyboard(unsigned char key, int x, int y){
                 glutPostRedisplay();
             }
             else {
-                std::cout << "light mode for RT" << std::endl;
                 RTscene.shader -> enablelighting = !(RTscene.shader -> enablelighting);
                 image_display();
             }
-            scene.shader -> enablelighting = !(scene.shader -> enablelighting);
-            glutPostRedisplay();
             break;
         case ' ':
             hw3AutoScreenshots();

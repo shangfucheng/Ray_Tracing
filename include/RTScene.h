@@ -18,7 +18,7 @@ RTScene class
 #include "Light.h"
 #include "RTGeometry.h"
 #include "Material.h"
-#include "Model.h"
+#include "RTModel.h"
 
 #ifndef __RTSCENE_H__
 #define __RTSCENE_H__
@@ -27,7 +27,7 @@ class RTNode {
 public:
     std::vector< RTNode* > childnodes;
     std::vector< glm::mat4 > childtransforms;
-    std::vector< Model* > models;
+    std::vector< RTModel* > models;
     std::vector< glm::mat4 > modeltransforms;
 };
 
@@ -38,8 +38,8 @@ public:
     // The following are containers of objects serving as the object palettes.
     // The containers store pointers so that they can also store derived class objects.
     std::map< std::string, RTGeometry* > RTgeometry;
-    std::map< std::string, Material* > material;
-    std::map< std::string, Model* > RTmodel;
+    std::map< std::string, Material* > RTmaterial;
+    std::map< std::string, RTModel* > RTmodel;
     std::map< std::string, Light* > light;
 
     // The container of nodes will be the scene graph after we connect the nodes by setting the child_nodes.
@@ -50,7 +50,7 @@ public:
         RTnode["world"] = new RTNode;
     }
     // ~RTScene(){
-    //     for(auto tri :triangle_soup){
+    //     for(Triangle* tri :triangle_soup){
     //         delete tri;
     //     }
     // }

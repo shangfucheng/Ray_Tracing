@@ -5,6 +5,7 @@ Ray class
 #include <glm/glm.hpp>
 #include "Intersection.h"
 #include "Image.h"
+#include <limits>
 #ifndef __RAY_H__
 #define __RAY_H__
 

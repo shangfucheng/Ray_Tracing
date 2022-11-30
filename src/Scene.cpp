@@ -4,7 +4,6 @@ Scene.cpp contains the implementation of the draw command
 #include "Scene.h"
 #include "Cube.h"
 #include "Obj.h"
-#include "Image.h"
 
 // The scene init definition 
 #include "Scene.inl"

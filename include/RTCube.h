@@ -52,7 +52,7 @@ public:
             20, 21, 22, 20, 22, 23 // Bottom face
         };
         for (int i = 0; i < sizeof(indices)/4; i+=3) {
-            Triangle* tri = new Triangle();
+            Triangle* tri = new Triangle;
             tri->P = std::vector<glm::vec3>{
                 glm::vec3(positions[indices[i]][0], positions[indices[i]][1], positions[indices[i]][2]),
                 glm::vec3(positions[indices[i+1]][0], positions[indices[i + 1]][1], positions[indices[i + 1]][2]),

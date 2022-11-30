@@ -5,7 +5,7 @@ Image.cpp contains the implementation Image class
 #include <vector>
 
 void Image::initialize() {
-	pixel = std::vector<glm::vec3>(width * height);
+	pixel = std::vector<glm::vec3>(width * height, glm::vec3(0.f));
 	glGenFramebuffers(1, &fbo);
 	glGenTextures(1, &tbo);
 }

@@ -3,7 +3,6 @@
 
 
 void RayTracer::Raytrace(Camera cam, RTScene RTscene, Image& image) {
-    // cam.computeMatrices();
     int w = image.width; int h = image.height;
     for (int j = 0; j < h; j++) {
         for (int i = 0; i < w; i++) {
@@ -11,7 +10,6 @@ void RayTracer::Raytrace(Camera cam, RTScene RTscene, Image& image) {
             Intersection hit = Intersect_Scene(ray, RTscene);
             image.pixel[j * w + i] = FindColor(RTscene, hit, 5);
             //std::cout << "cur Pixel: " << image.pixel[j * w + i].x <<" " << image.pixel[j * w + i].y << " " << image.pixel[j * w + i].z << std::endl;
-            
         }
         std::cout << j << std::endl;
     }
@@ -23,10 +21,15 @@ Ray RayTracer::RayThruPixel(Camera cam, int i, int j, int width, int height) {
     glm::vec3 w = glm::normalize(cam.eye - cam.target);
     glm::vec3 u = glm::normalize(glm::cross(cam.up, w));
     glm::vec3 v = glm::cross(w, u);
-    float alpha = 2.0 * ((i + 0.5) / width) - 1.0;
-    float beta = 1.0 - 2.0 * ((j + 0.5) / height);
+    float alpha = 2.0 * ((i + 0.5) / float(width)) - 1.0;
+    float beta = 1.0 - 2.0 * ((j + 0.5) / float(height));
+    // camera coord
+    // ray.p0 = glm::vec3(0.0f);
+    // ray.dir = glm::vec3(alpha*cam.aspect*tan(cam.fovy/2.0f), beta*tan(cam.fovy/2.0), -1);
+    
+    // world coord
     ray.p0 = cam.eye;
-    ray.dir = glm::normalize(alpha * cam.aspect * tan(cam.fovy / 2.0f) * u + beta * tan(cam.fovy / 2.0f) * v - w);
+    ray.dir = glm::normalize(alpha * cam.aspect * glm::tan(cam.fovy / 2.0f) * u + beta * glm::tan(cam.fovy / 2.0f) * v - w);
     //std::cout << "ray dir: " << ray.p0.x << " "<< ray.p0.y << " " << ray.p0.z << std::endl;
     return ray;
 }
@@ -37,22 +40,25 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle* triangle) {
         glm::vec4(triangle->P[0], 1.0f),
         glm::vec4(triangle->P[1], 1.0f),
         glm::vec4(triangle->P[2], 1.0f),
-        glm::vec4(-1.0f*ray.dir, 0.0f)
+        glm::vec4(-ray.dir, 0.0f)
     };
-    glm::vec4 p0 = glm::vec4(ray.p0, 1.0f);
+    glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
+    // glm::vec4 p0 = glm::vec4(0.0,0.0,0.0, 1.0f); // in camera coord
+
     //std::cout << p0.x << " " << p0.y << " " << p0.z << " " << p0.w << std::endl;
     //std::cout << triangle.P[0].x << " " << triangle.P[0].y << " " << triangle.P[0].z << std::endl;
 
-    glm::vec4 coefficient = glm::inverse(tri)*p0 ;
+    glm::vec4 coefficient = glm::inverse(tri)*p0;
     //std::cout << coefficient.x << " " << coefficient.y << " " << coefficient.z << " " << coefficient.w << std::endl;
     if (coefficient.x >= 0 && coefficient.y >= 0 && coefficient.z >= 0 && coefficient.w >= 0) {
         hit_point.P = coefficient.x * triangle->P[0] + coefficient.y * triangle->P[1] + coefficient.z * triangle->P[2]; // intersection positoin
+        // hit_point.P = glm::vec3(p0)+coefficient.w*ray.dir;
         hit_point.N = glm::normalize(coefficient.x * triangle->N[0] + coefficient.y * triangle->N[1] + coefficient.z * triangle->N[2]); // normal
         hit_point.dist = coefficient.w; // dist = t
-        hit_point.V = -ray.dir; // - or not -?
+        hit_point.V = ray.dir; // - or not -?
         hit_point.triangle = triangle;
         hit_point.intersect = 1.0;
-        std::cout << "hit" << std::endl;
+        // std::cout << "hit" << std::endl;
     }
     // if(hit_point.triangle != NULL) std::cout << "afterhit "<< hit_point.triangle->P[2].x <<hit_point.triangle->P[2].y  << std::endl;
 
@@ -67,7 +73,7 @@ Intersection RayTracer::Intersect_Scene(Ray ray, RTScene RTscene) {
         if (hit_temp.dist < mindist) { // closer than previous hit
             mindist = hit_temp.dist;
             hit = hit_temp;
-            std::cout << mindist << std::endl;
+            // std::cout << mindist << std::endl;
         }
     }
 
@@ -121,20 +127,21 @@ glm::vec3 RayTracer::FindColor(RTScene RTscene, Intersection &hit, int recursion
     //}
     glm::vec3 color = glm::vec3(0.1f, 0.2f, 0.3f);
     if (hit.intersect == 1.0) {
-        std::cout << "color" << std::endl;
-        std::cout << hit.triangle->P[1].x << " " << hit.triangle->P[1].y << std::endl;
+        // std::cout << "color" << std::endl;
+        // std::cout << hit.triangle->P[1].x << " " << hit.triangle->P[1].y << std::endl;
+        
+        // color = glm::vec3(0.8,0.8,0.1);
+        
         color = glm::vec3(BlinnPhone(hit));
-    }
-    /*glm::vec4 diffuse_sum = glm::vec4(0.0f);
-    int numLights = RTscene.light.size();
-    
-    S
-    for (int i = 0; i < numLights; i++) {
-        color += hit.triangle->material->diffuse* RTscene.shader->lightcolors[i] *
-            std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect;
+        glm::vec4 diffuse_sum = glm::vec4(0.0f);
+        int numLights = RTscene.light.size();
 
-    }*/
-   
+        for (int i = 0; i < numLights; i++) {
+            color += glm::vec3(hit.triangle->material->diffuse* RTscene.shader->lightcolors[i] *
+                std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
+
+        }
+    }
 
    
     //std::cout << color.x << " " << color.y << " " << color.z << std::endl;
