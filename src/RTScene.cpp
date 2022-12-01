@@ -32,7 +32,8 @@ void RTScene::buildTriangleSoup() {
     
     // current modelview during the depth first search.  
     // Initially, we are at the "world" node, whose modelview matrix is just camera's view matrix.
-    mat4 cur_VM =mat4(1.0f);//camera->view; 
+    // mat4 cur_VM =camera->view; // camera coord
+    mat4 cur_VM = mat4(1.0f); // world coord
 
     dfs_stack.push(cur);
     matrix_stack.push(cur_VM);
@@ -61,10 +62,7 @@ void RTScene::buildTriangleSoup() {
 
             shader -> modelview = cur_VM * cur->modeltransforms[i]; // Without updating cur_VM, modelview would just be camera's view matrix.
             shader -> material  = ( cur -> models[i] ) -> material;
-            // shader -> setUniforms();
-            // std::cout << cur_VM[0].x << " " << cur_VM[0].y << " " << cur_VM[0].z << std::endl;
-            // std::cout << cur->modeltransforms[i][0].x << " " << cur->modeltransforms[i][0].y << " " << cur->modeltransforms[i][0].z << std::endl;
-            // std::cout << shader -> modelview[0].x << " " << shader -> modelview[0].y << " " << shader -> modelview[0].z << std::endl;
+            shader -> setUniforms();
 
             for (Triangle& j : (cur->models[i])->RTgeometry->elements) {
                 j.material = shader -> material;

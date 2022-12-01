@@ -21,16 +21,17 @@ Ray RayTracer::RayThruPixel(Camera* cam, int i, int j, int width, int height) {
     glm::vec3 w = glm::normalize(cam->eye - cam->target);
     glm::vec3 u = glm::normalize(glm::cross(w,cam->up));
     glm::vec3 v = glm::cross(w, u);
-    float fovy_rad = cam->fovy * M_PI/180.0f;
-    float alpha = 2.0f * (((float)i + 0.5f) / (float)width) - 1.0f;
-    float beta = 1.0f - 2.0f * (((float)j + 0.5f) / (float)height);
+    float fovy_rad = cam->fovy * M_PI/180.0f; // let angle of view be 50 degree
+    float alpha =  (2.0f *(i + 0.5f) / (float)width) - 1.0f;
+    float beta = 1.0f - (2.0f *(j + 0.5f) / (float)height);
+    float aspect = (float)width/(float)height;
     // camera coord
     // ray.p0 = glm::vec3(0.0f);
-    // ray.dir = glm::vec3(alpha*(float)cam->aspect*tan(fovy_rad/2.0f), beta*tan(fovy_rad/2.0), -1.0f);
-
+    // ray.dir = glm::vec3(alpha*aspect*tan(fovy_rad/2.0f), beta*tan(fovy_rad/2.0), -1.0f);
+    
     // world coord
     ray.p0 = cam->eye;
-    ray.dir = glm::normalize(alpha * cam->aspect * glm::tan(fovy_rad/2.0f) * u + beta * glm::tan(fovy_rad/2.0f) * v - w);
+    ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u + beta * glm::tan(fovy_rad/2.0f) * v - w);
     return ray;
 }
 
@@ -68,7 +69,6 @@ Intersection RayTracer::Intersect_Scene(Ray ray, RTScene RTscene) {
             // std::cout << mindist << std::endl;
         }
     }
-
     return hit;
 }
 
@@ -78,6 +78,9 @@ glm::vec3 RayTracer::FindColor(RTScene RTscene, Intersection hit, int recursion_
         return glm::vec3(tri.material->ambient + tri.material->diffuse + tri.material->specular);
     };
 
+    /*** 
+     * function to add lighting using BlinnPhone.
+    ***/
     std::function<glm::vec4(Intersection)> BlinnPhone = [&](Intersection hit) {
         glm::vec4 fragColor;
         glm::vec3 normal = hit.N;
@@ -114,24 +117,56 @@ glm::vec3 RayTracer::FindColor(RTScene RTscene, Intersection hit, int recursion_
         return fragColor;
     };
 
-    //if (recursion_depth == 0) {
+    /***
+     * function to check shadows
+     * To add shadow for each light, shoot a ray towards the light 
+     * and test if the ray intersect with any other triangle 
+     * (not including the self triangle). If it hits other triangle that is 
+     * between the point and the light, then the light is not visible.
+    ***/
+    std::function<bool(Ray)> ray_to_lights = [&](Ray ray_to_light){
+        Intersection hit = Intersect_Scene(ray_to_light, RTscene);
+        return hit.intersect==0.0f;
+    };
+
+
+    // if (recursion_depth == 0) {
     //    return ShadingModel(*hit.triangle);
-    //}
+    // }
     glm::vec3 color = glm::vec3(0.1f, 0.2f, 0.3f);
     if (hit.intersect == 1.0) {
+        for(auto const& l: RTscene.shader->lightpositions){
+            Ray ray_to_light;
+            ray_to_light.p0 = hit.P;
+            ray_to_light.dir = glm::vec3(l)-hit.P;
+            if(ray_to_lights(ray_to_light)){    // when ray can hit light
+                color = glm::vec3(glm::normalize(BlinnPhone(hit)));
+                glm::vec4 diffuse_sum = glm::vec4(0.0f);
+                int numLights = RTscene.light.size();
+                for (int i = 0; i < numLights; i++) {
+                    color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
+                        std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
+
+                }
+            }else{  // when there is some triangles in between.
+                color = glm::vec3(0.0f);   // assign black for shadow.
+            }
+        }
+        
         // std::cout << "color" << std::endl;
         // std::cout << hit.triangle.P[1].x << " " << hit.triangle.P[1].y << std::endl;
         // color = glm::vec3(0.8,0.8,0.1);
         
-        color = glm::vec3(glm::normalize(BlinnPhone(hit)));
-        glm::vec4 diffuse_sum = glm::vec4(0.0f);
-        int numLights = RTscene.light.size();
+        // color = glm::vec3(glm::normalize(BlinnPhone(hit)));
+        // glm::vec4 diffuse_sum = glm::vec4(0.0f);
+        // int numLights = RTscene.light.size();
 
-        for (int i = 0; i < numLights; i++) {
-            color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
-                std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
+        // for (int i = 0; i < numLights; i++) {
+        //     color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
+        //         std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
 
-        }
+        // }
+        
     }
 
    

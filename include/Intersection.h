@@ -20,7 +20,7 @@ public:
         P = glm::vec3(0.f);
         N = glm::vec3(0.f);
         V = glm::vec3(0.f);
-        
+
         dist = INFINITY;//std::numeric_limits<float>::infinity();
         intersect = 0.0;
     }
