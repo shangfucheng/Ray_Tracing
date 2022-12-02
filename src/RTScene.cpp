@@ -32,8 +32,8 @@ void RTScene::buildTriangleSoup() {
     
     // current modelview during the depth first search.  
     // Initially, we are at the "world" node, whose modelview matrix is just camera's view matrix.
-    // mat4 cur_VM =camera->view; // camera coord
-    mat4 cur_VM = mat4(1.0f); // world coord
+    mat4 cur_VM =camera->view; // camera coord
+    // mat4 cur_VM = mat4(1.0f); // world coord
 
     dfs_stack.push(cur);
     matrix_stack.push(cur_VM);
@@ -67,26 +67,26 @@ void RTScene::buildTriangleSoup() {
             for (Triangle& j : (cur->models[i])->RTgeometry->elements) {
                 j.material = ( cur -> models[i] ) -> material;
                 // std::cout << shader->modelview[1].x <<" " << shader->modelview[1].y <<" " << shader->modelview[1].z<< std::endl;
-                j.position_update(cur_VM) ;
+                // j.position_update(cur_VM) ;
                 
-                // j.P[0] = vec3(shader->modelview*vec4(j.P[0],1));
-                // j.P[1] = vec3(shader->modelview*vec4(j.P[1],1));
-                // j.P[2] = vec3(shader->modelview*vec4(j.P[2],1));
+                j.P[0] = vec3(shader->modelview*vec4(j.P[0],1));
+                j.P[1] = vec3(shader->modelview*vec4(j.P[1],1));
+                j.P[2] = vec3(shader->modelview*vec4(j.P[2],1));
 
-                // j.N[0] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[0],0)));
-                // j.N[1] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[1],0)));
-                // j.N[2] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[2],0)));
+                j.N[0] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[0],0)));
+                j.N[1] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[1],0)));
+                j.N[2] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[2],0)));
                 std::cout << j.P[0].x <<" " << j.P[0].y <<" " << j.P[0].z<< std::endl;
 
                 triangle_soup.push_back(j);
             }
+            // shader -> modelview = cur_VM * cur->modeltransforms[i];
         }
         // Continue the DFS: put all the child nodes of the current node in the stack
         for (size_t i = 0; i < cur->childnodes.size(); i++) {
             dfs_stack.push(cur->childnodes[i]);
             matrix_stack.push(cur_VM * cur->childtransforms[i]);
         }
-
     } // End of DFS while loop.
 }
 

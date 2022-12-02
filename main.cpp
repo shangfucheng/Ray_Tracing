@@ -53,10 +53,11 @@ void initialize(void){
     
     // Initialize scene
     scene.init();
-    RTscene.init();
-    RTscene.buildTriangleSoup();
     // Initialize image
     image.initialize();
+    RTscene.init();
+    RTscene.buildTriangleSoup();
+
     
     // Enable depth test
     glEnable(GL_DEPTH_TEST);

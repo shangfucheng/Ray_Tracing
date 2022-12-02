@@ -10,10 +10,10 @@ using namespace glm;
 void RTScene::init(void) {
     // Create a geometry palette
     RTgeometry["cube"] = new RTCube;
-    // RTgeometry["teapot"] = new RTObj;
+    RTgeometry["teapot"] = new RTObj;
     // RTgeometry["bunny"] = new RTObj;
     RTgeometry["cube"]->init();
-    // RTgeometry["teapot"]->init("models/teapot.obj");// 2464 triangles
+    RTgeometry["teapot"]->init("models/teapot.obj");// 2464 triangles
     // RTgeometry["bunny"]->init("models/bunny.obj"); // 28576 triangles
 
     // Create a material palette
@@ -49,12 +49,12 @@ void RTScene::init(void) {
     RTmaterial["bulb"]->shininess = 300.0f;
 
     //Create a model palette
-    // RTmodel["teapot1"] = new RTModel;
-    // RTmodel["teapot1"]->RTgeometry = RTgeometry["teapot"];
-    // RTmodel["teapot1"]->material = RTmaterial["silver"];
-    // RTmodel["teapot2"] = new RTModel;
-    // RTmodel["teapot2"]->RTgeometry = RTgeometry["teapot"];
-    // RTmodel["teapot2"]->material = RTmaterial["ceramic"];
+    RTmodel["teapot1"] = new RTModel;
+    RTmodel["teapot1"]->RTgeometry = RTgeometry["teapot"];
+    RTmodel["teapot1"]->material = RTmaterial["silver"];
+    RTmodel["teapot2"] = new RTModel;
+    RTmodel["teapot2"]->RTgeometry = RTgeometry["teapot"];
+    RTmodel["teapot2"]->material = RTmaterial["ceramic"];
     RTmodel["table piece"] = new RTModel;
     RTmodel["table piece"]->RTgeometry = RTgeometry["cube"];
     RTmodel["table piece"]->material = RTmaterial["silver"];
@@ -78,8 +78,8 @@ void RTScene::init(void) {
     RTnode["table"] = new RTNode;
     RTnode["table top"] = new RTNode;
     RTnode["table leg"] = new RTNode;
-    // RTnode["teapot1"] = new RTNode;
-    // RTnode["teapot2"] = new RTNode;
+    RTnode["teapot1"] = new RTNode;
+    RTnode["teapot2"] = new RTNode;
     // RTnode["bunny"] = new RTNode;
 
 
@@ -95,17 +95,17 @@ void RTScene::init(void) {
     // RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, -0.4f)));
 
     RTnode["table leg"]->models.push_back(RTmodel["table piece"]);
-    RTnode["table leg"]->modeltransforms.push_back(translate(vec3(0.0f, 0.5f, 0.0f)) * scale(vec3(0.2f, 1.0f, 0.2f)));
+    RTnode["table leg"]->modeltransforms.push_back(translate(vec3(0.1f, 0.5f, 0.0f)) * scale(vec3(0.2f, 1.0f, 0.2f)));
 
     RTnode["table top"]->models.push_back(RTmodel["table piece"]);
-    RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.0f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));
-    // RTnode["table top"]->childnodes.push_back(RTnode["teapot1"]);
-    // RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f)));
+    RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.5f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));
+    RTnode["table top"]->childnodes.push_back(RTnode["teapot1"]);
+    RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f)));
     // RTnode["table top"]->childnodes.push_back(RTnode["teapot2"]);
     // RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-120.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
 
-    // RTnode["teapot1"]->models.push_back(RTmodel["teapot1"]);
-    // RTnode["teapot1"]->modeltransforms.push_back(scale(vec3(0.5f)));
+    RTnode["teapot1"]->models.push_back(RTmodel["teapot1"]);
+    RTnode["teapot1"]->modeltransforms.push_back(scale(vec3(0.5f)));
     // RTnode["teapot2"]->models.push_back(RTmodel["teapot2"]);
     // RTnode["teapot2"]->modeltransforms.push_back(scale(vec3(1.0f, 1.5f, 1.0f)) * scale(vec3(0.5f)));
 

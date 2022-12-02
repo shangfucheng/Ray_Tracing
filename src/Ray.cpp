@@ -19,19 +19,19 @@ void RayTracer::Raytrace(Camera* cam, RTScene &RTscene, Image& image) {
 Ray RayTracer::RayThruPixel(Camera* cam, int i, int j, int width, int height) {
     Ray ray; // find the ray source position and direction through pixel[i][[j]
     glm::vec3 w = glm::normalize(cam->eye - cam->target);
-    glm::vec3 u = glm::normalize(glm::cross(w,cam->up));
+    glm::vec3 u = glm::normalize(glm::cross(cam->up,w));
     glm::vec3 v = glm::cross(w, u);
     float fovy_rad = cam->fovy * M_PI/180.0f; // let angle of view be 50 degree
     float alpha =  (2.0f *(i + 0.5f) / (float)width) - 1.0f;
     float beta = 1.0f - (2.0f *(j + 0.5f) / (float)height);
-    float aspect = (float)width/(float)height;
+    float aspect = cam->aspect;
     // camera coord
-    // ray.p0 = glm::vec3(0.0f);
-    // ray.dir = glm::vec3(alpha*aspect*glm::tan(fovy_rad/2.0f), beta*glm::tan(fovy_rad/2.0), -1.0f);
+    ray.p0 = glm::vec3(0.0f);
+    ray.dir = glm::vec3(alpha*aspect*glm::tan(fovy_rad/2.0f), beta*glm::tan(fovy_rad/2.0), -1.0f);
     
     // world coord
-    ray.p0 = cam->eye;
-    ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u + beta * glm::tan(fovy_rad/2.0f) * v - w);
+    // ray.p0 = cam->eye;
+    // ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u + beta * glm::tan(fovy_rad/2.0f) * v - w);
     // std::cout << ray.dir.x <<" "<< ray.dir.y << " " <<ray.dir.z << std::endl;
     return ray;
 }
@@ -45,8 +45,8 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
         glm::vec4(-ray.dir, 0.0f)
     };
 
-    // glm::vec4 p0 = glm::vec4(0.0f,0.0f,0.0f, 1.0f); // in camera coord
-    glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
+    glm::vec4 p0 = glm::vec4(0.0f,0.0f,0.0f, 1.0f); // in camera coord
+    // glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
 
     glm::vec4 coefficient = glm::inverse(tri)*p0; 
     // std::cout << coefficient.x << " " << coefficient.y << " " << coefficient.z << " " << coefficient.w << std::endl;
@@ -78,11 +78,6 @@ Intersection RayTracer::Intersect_Scene(Ray ray, RTScene &RTscene) {
 }
 
 glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion_depth) {
-    std::function<glm::vec3(Triangle)> ShadingModel = [&](Triangle tri) {
-        // not sure what shadingModel should do.
-        return glm::vec3(tri.material->ambient + tri.material->diffuse + tri.material->specular);
-    };
-
     /*** 
      * function to add lighting using BlinnPhone.
     ***/
@@ -146,15 +141,16 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
         for(auto const& l: RTscene.shader->lightpositions){
             Ray ray_to_light;
             ray_to_light.p0 = 1.05f*hit.P;
-            ray_to_light.dir = glm::vec3(l)-hit.P;
+            ray_to_light.dir = glm::normalize(glm::vec3(l)-hit.P);
             if(ray_to_lights(ray_to_light)){    // when ray can hit light
                 color = glm::vec3(BlinnPhone(hit));
                 glm::vec4 diffuse_sum = glm::vec4(0.0f);
                 int numLights = RTscene.light.size();
                 for (int i = 0; i < numLights; i++) {
                     color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
-                        std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
+                        std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),0.0f) * hit.intersect);
                 }
+                
                 Ray reflection;
                 reflection.p0 = hit.P*1.05f;
                 reflection.dir = 2.0f*(glm::dot(hit.N,hit.V))*hit.N-hit.V;
@@ -165,7 +161,7 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
             }
         }
         
-        // std::cout << "color" << std::endl;
+        // std::cout << "depth " << recursion_depth << std::endl;
         // std::cout << hit.triangle.P[1].x << " " << hit.triangle.P[1].y << std::endl;
         // color = glm::vec3(0.8,0.8,0.1);
 
