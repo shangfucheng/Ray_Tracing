@@ -57,7 +57,7 @@ void RTScene::init(void) {
     // RTmodel["teapot2"]->material = RTmaterial["ceramic"];
     RTmodel["table piece"] = new RTModel;
     RTmodel["table piece"]->RTgeometry = RTgeometry["cube"];
-    RTmodel["table piece"]->material = RTmaterial["turquoise"];
+    RTmodel["table piece"]->material = RTmaterial["silver"];
     // RTmodel["bunny"] = new RTModel;
     // RTmodel["bunny"]->RTgeometry = RTgeometry["bunny"];
     // RTmodel["bunny"]->material = RTmaterial["turquoise"];
@@ -87,8 +87,8 @@ void RTScene::init(void) {
     RTnode["table"]->childtransforms.push_back(translate(vec3(0.0f, 1.2f, 0.0f)));
     RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
     RTnode["table"]->childtransforms.push_back(translate(vec3(-0.9f, 0.0f, -0.4f)));
-    RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
-    RTnode["table"]->childtransforms.push_back(translate(vec3(-0.9f, 0.0f, 0.4f)));
+    // RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
+    // RTnode["table"]->childtransforms.push_back(translate(vec3(-0.9f, 0.0f, 0.4f)));
     // RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
     // RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, 0.4f)));
     // RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
@@ -112,18 +112,18 @@ void RTScene::init(void) {
     // RTnode["bunny"]->models.push_back(RTmodel["bunny"]);
     // RTnode["bunny"]->modeltransforms.push_back(scale(vec3(0.8f)) * translate(vec3(0.0f, 1.0f, 0.0f)));
 
+    
     RTnode["world"]->childnodes.push_back(RTnode["table"]);
     RTnode["world"]->childtransforms.push_back(mat4(1.0f));
     // RTnode["world"]->childnodes.push_back(RTnode["bunny"]);
     // RTnode["world"]->childtransforms.push_back(translate(vec3(-1.8f, 0.0f, 0.0f)) * rotate(90.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
-    RTnode["world"]->models.push_back(RTmodel["bulb"]);
-    RTnode["world"]->modeltransforms.push_back(translate(vec3(0.0f, 2.0f, 0.0f)) * scale(vec3(0.1f)));
-
+    // RTnode["world"]->models.push_back(RTmodel["bulb"]);
+    // RTnode["world"]->modeltransforms.push_back(translate(vec3(0.0f, 2.0f, 0.0f)) * scale(vec3(0.5f)));
 
     // Put a camera
     camera = new Camera;
     camera->target_default = vec3(0.0f, 1.0f, 0.0f);
-    camera->eye_default = vec3(0.0f, 1.0f, 5.0f);
+    camera->eye_default = vec3(0.0f, 2.0f, 5.0f);
     camera->up_default = vec3(0.0f, 1.0f, 0.0f);
     camera->reset();
 

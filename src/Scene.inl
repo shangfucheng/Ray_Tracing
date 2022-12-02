@@ -86,12 +86,12 @@ void Scene::init(void){
     node["table"] -> childtransforms.push_back( translate(vec3(0.0f,1.2f,0.0f)) );
     node["table"] -> childnodes.push_back( node["table leg"] );
     node["table"] -> childtransforms.push_back( translate(vec3(-0.9f,0.0f,-0.4f)) );
-    node["table"] -> childnodes.push_back( node["table leg"] );
-    node["table"] -> childtransforms.push_back( translate(vec3(-0.9f,0.0f,0.4f)) );
-    node["table"] -> childnodes.push_back( node["table leg"] );
-    node["table"] -> childtransforms.push_back( translate(vec3(0.9f,0.0f,0.4f)) );
-    node["table"] -> childnodes.push_back( node["table leg"] );
-    node["table"] -> childtransforms.push_back( translate(vec3(0.9f,0.0f,-0.4f)) );
+    // node["table"] -> childnodes.push_back( node["table leg"] );
+    // node["table"] -> childtransforms.push_back( translate(vec3(-0.9f,0.0f,0.4f)) );
+    // node["table"] -> childnodes.push_back( node["table leg"] );
+    // node["table"] -> childtransforms.push_back( translate(vec3(0.9f,0.0f,0.4f)) );
+    // node["table"] -> childnodes.push_back( node["table leg"] );
+    // node["table"] -> childtransforms.push_back( translate(vec3(0.9f,0.0f,-0.4f)) );
     
     node["table leg"] -> models.push_back( model["table piece"] );
     node["table leg"] -> modeltransforms.push_back( translate(vec3(0.0f,0.5f,0.0f)) * scale(vec3(0.2f,1.0f,0.2f)) );

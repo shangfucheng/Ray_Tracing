@@ -1,8 +1,8 @@
 
 #include "Ray.h"
+#include <iostream>
 
-
-void RayTracer::Raytrace(Camera* cam, RTScene RTscene, Image& image) {
+void RayTracer::Raytrace(Camera* cam, RTScene &RTscene, Image& image) {
     int w = image.width; int h = image.height;
     for (int j = 0; j < h; j++) {
         for (int i = 0; i < w; i++) {
@@ -27,11 +27,12 @@ Ray RayTracer::RayThruPixel(Camera* cam, int i, int j, int width, int height) {
     float aspect = (float)width/(float)height;
     // camera coord
     // ray.p0 = glm::vec3(0.0f);
-    // ray.dir = glm::vec3(alpha*aspect*tan(fovy_rad/2.0f), beta*tan(fovy_rad/2.0), -1.0f);
+    // ray.dir = glm::vec3(alpha*aspect*glm::tan(fovy_rad/2.0f), beta*glm::tan(fovy_rad/2.0), -1.0f);
     
     // world coord
     ray.p0 = cam->eye;
     ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u + beta * glm::tan(fovy_rad/2.0f) * v - w);
+    // std::cout << ray.dir.x <<" "<< ray.dir.y << " " <<ray.dir.z << std::endl;
     return ray;
 }
 
@@ -43,7 +44,10 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
         glm::vec4(triangle.P[2], 1.0f),
         glm::vec4(-ray.dir, 0.0f)
     };
+
+    // glm::vec4 p0 = glm::vec4(0.0f,0.0f,0.0f, 1.0f); // in camera coord
     glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
+
     glm::vec4 coefficient = glm::inverse(tri)*p0; 
     // std::cout << coefficient.x << " " << coefficient.y << " " << coefficient.z << " " << coefficient.w << std::endl;
     if (coefficient.x >= 0 && coefficient.y >= 0 && coefficient.z >= 0 && coefficient.w >= 0) {
@@ -51,14 +55,15 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
         // hit_point.P = glm::vec3(p0)+coefficient.w*ray.dir;
         hit_point.N = glm::normalize(coefficient.x * triangle.N[0] + coefficient.y * triangle.N[1] + coefficient.z * triangle.N[2]); // normal
         hit_point.dist = coefficient.w; // dist = t
-        hit_point.V = ray.dir; // - or not -?
+        hit_point.V = -ray.dir; // direction of incoming ray
         hit_point.triangle = triangle;
         hit_point.intersect = 1.0;
+        // std::cout << triangle.P[0].x << " " << triangle.P[0].y << " " <<triangle.P[0].z << " " <<std::endl;
     }
     return hit_point;
 }
 
-Intersection RayTracer::Intersect_Scene(Ray ray, RTScene RTscene) {
+Intersection RayTracer::Intersect_Scene(Ray ray, RTScene &RTscene) {
     float mindist = INFINITY;//std::numeric_limits<float>::infinity();   // distance
     Intersection hit;
     for (Triangle tri : RTscene.triangle_soup) { // Find closest intersection; test all objects       
@@ -72,7 +77,7 @@ Intersection RayTracer::Intersect_Scene(Ray ray, RTScene RTscene) {
     return hit;
 }
 
-glm::vec3 RayTracer::FindColor(RTScene RTscene, Intersection hit, int recursion_depth) {
+glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion_depth) {
     std::function<glm::vec3(Triangle)> ShadingModel = [&](Triangle tri) {
         // not sure what shadingModel should do.
         return glm::vec3(tri.material->ambient + tri.material->diffuse + tri.material->specular);
@@ -125,29 +130,36 @@ glm::vec3 RayTracer::FindColor(RTScene RTscene, Intersection hit, int recursion_
      * between the point and the light, then the light is not visible.
     ***/
     std::function<bool(Ray)> ray_to_lights = [&](Ray ray_to_light){
-        Intersection hit = Intersect_Scene(ray_to_light, RTscene);
-        return hit.intersect==0.0f;
+        for(Triangle tri: RTscene.triangle_soup){
+            Intersection hit = Intersect_Triangle(ray_to_light, tri);
+            if(hit.intersect==1.0f) return false;
+        }
+        return true;
     };
 
-
-    // if (recursion_depth == 0) {
-    //    return ShadingModel(*hit.triangle);
-    // }
-    glm::vec3 color = glm::vec3(0.1f, 0.2f, 0.3f);
+    glm::vec3 color = glm::vec3(0.1f, 0.2f, 0.3f);      
+    if (recursion_depth == 0) {
+       return color;
+    }
+    
     if (hit.intersect == 1.0) {
         for(auto const& l: RTscene.shader->lightpositions){
             Ray ray_to_light;
-            ray_to_light.p0 = hit.P;
+            ray_to_light.p0 = 1.05f*hit.P;
             ray_to_light.dir = glm::vec3(l)-hit.P;
             if(ray_to_lights(ray_to_light)){    // when ray can hit light
-                color = glm::vec3(glm::normalize(BlinnPhone(hit)));
+                color = glm::vec3(BlinnPhone(hit));
                 glm::vec4 diffuse_sum = glm::vec4(0.0f);
                 int numLights = RTscene.light.size();
                 for (int i = 0; i < numLights; i++) {
                     color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
                         std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
-
                 }
+                Ray reflection;
+                reflection.p0 = hit.P*1.05f;
+                reflection.dir = 2.0f*(glm::dot(hit.N,hit.V))*hit.N-hit.V;
+                Intersection reflect_hit = Intersect_Scene(reflection, RTscene);
+                color += glm::vec3(hit.triangle.material->specular)*FindColor(RTscene, reflect_hit, --recursion_depth);
             }else{  // when there is some triangles in between.
                 color = glm::vec3(0.0f);   // assign black for shadow.
             }
@@ -156,7 +168,8 @@ glm::vec3 RayTracer::FindColor(RTScene RTscene, Intersection hit, int recursion_
         // std::cout << "color" << std::endl;
         // std::cout << hit.triangle.P[1].x << " " << hit.triangle.P[1].y << std::endl;
         // color = glm::vec3(0.8,0.8,0.1);
-        
+
+
         // color = glm::vec3(glm::normalize(BlinnPhone(hit)));
         // glm::vec4 diffuse_sum = glm::vec4(0.0f);
         // int numLights = RTscene.light.size();
