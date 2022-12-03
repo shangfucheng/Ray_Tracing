@@ -87,27 +87,27 @@ void RTScene::init(void) {
     RTnode["table"]->childtransforms.push_back(translate(vec3(0.0f, 1.2f, 0.0f)));
     RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
     RTnode["table"]->childtransforms.push_back(translate(vec3(-0.9f, 0.0f, -0.4f)));
-    // RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
-    // RTnode["table"]->childtransforms.push_back(translate(vec3(-0.9f, 0.0f, 0.4f)));
-    // RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
-    // RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, 0.4f)));
-    // RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
-    // RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, -0.4f)));
+    RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
+    RTnode["table"]->childtransforms.push_back(translate(vec3(-0.9f, 0.0f, 0.4f)));
+    RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
+    RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, 0.4f)));
+    RTnode["table"]->childnodes.push_back(RTnode["table leg"]);
+    RTnode["table"]->childtransforms.push_back(translate(vec3(0.9f, 0.0f, -0.4f)));
 
     RTnode["table leg"]->models.push_back(RTmodel["table piece"]);
-    RTnode["table leg"]->modeltransforms.push_back(translate(vec3(0.1f, 0.5f, 0.0f)) * scale(vec3(0.2f, 1.0f, 0.2f)));
+    RTnode["table leg"]->modeltransforms.push_back(translate(vec3(0.f, 0.5f, 0.0f)) * scale(vec3(0.2f, 1.0f, 0.2f)));
 
     RTnode["table top"]->models.push_back(RTmodel["table piece"]);
-    RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.5f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));
+    RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));
     RTnode["table top"]->childnodes.push_back(RTnode["teapot1"]);
     RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f)));
-    // RTnode["table top"]->childnodes.push_back(RTnode["teapot2"]);
-    // RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-120.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
+    RTnode["table top"]->childnodes.push_back(RTnode["teapot2"]);
+    RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-120.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
 
     RTnode["teapot1"]->models.push_back(RTmodel["teapot1"]);
     RTnode["teapot1"]->modeltransforms.push_back(scale(vec3(0.5f)));
-    // RTnode["teapot2"]->models.push_back(RTmodel["teapot2"]);
-    // RTnode["teapot2"]->modeltransforms.push_back(scale(vec3(1.0f, 1.5f, 1.0f)) * scale(vec3(0.5f)));
+    RTnode["teapot2"]->models.push_back(RTmodel["teapot2"]);
+    RTnode["teapot2"]->modeltransforms.push_back(scale(vec3(1.0f, 1.5f, 1.0f)) * scale(vec3(0.5f)));
 
     // RTnode["bunny"]->models.push_back(RTmodel["bunny"]);
     // RTnode["bunny"]->modeltransforms.push_back(scale(vec3(0.8f)) * translate(vec3(0.0f, 1.0f, 0.0f)));

@@ -26,12 +26,12 @@ Ray RayTracer::RayThruPixel(Camera* cam, int i, int j, int width, int height) {
     float beta = 1.0f - (2.0f *(j + 0.5f) / (float)height);
     float aspect = cam->aspect;
     // camera coord
-    ray.p0 = glm::vec3(0.0f);
-    ray.dir = glm::vec3(alpha*aspect*glm::tan(fovy_rad/2.0f), beta*glm::tan(fovy_rad/2.0), -1.0f);
+    // ray.p0 = glm::vec3(0.0f);
+    // ray.dir = glm::vec3(alpha*aspect*glm::tan(fovy_rad/2.0f), beta*glm::tan(fovy_rad/2.0), -1.0f);
     
     // world coord
-    // ray.p0 = cam->eye;
-    // ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u + beta * glm::tan(fovy_rad/2.0f) * v - w);
+    ray.p0 = cam->eye;
+    ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u - beta * glm::tan(fovy_rad/2.0f) * v - w);
     // std::cout << ray.dir.x <<" "<< ray.dir.y << " " <<ray.dir.z << std::endl;
     return ray;
 }
@@ -45,8 +45,8 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
         glm::vec4(-ray.dir, 0.0f)
     };
 
-    glm::vec4 p0 = glm::vec4(0.0f,0.0f,0.0f, 1.0f); // in camera coord
-    // glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
+    // glm::vec4 p0 = glm::vec4(0.0f,0.0f,0.0f, 1.0f); // in camera coord
+    glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
 
     glm::vec4 coefficient = glm::inverse(tri)*p0; 
     // std::cout << coefficient.x << " " << coefficient.y << " " << coefficient.z << " " << coefficient.w << std::endl;
@@ -85,7 +85,7 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
         glm::vec4 fragColor;
         glm::vec3 normal = hit.N;
         glm::mat4 modelview = RTscene.shader->modelview;
-        glm::vec4 position = glm::vec4(hit.P,1);
+        glm::vec4 position = glm::vec4(hit.P,1.f);
         glm::vec4 sumLight = glm::vec4(0.0f);
         int nlights = RTscene.light.size();
         std::vector<glm::vec4> lightpositions = RTscene.shader->lightpositions;

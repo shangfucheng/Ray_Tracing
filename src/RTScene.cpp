@@ -64,18 +64,19 @@ void RTScene::buildTriangleSoup() {
             shader -> material  = ( cur -> models[i] ) -> material;
             shader -> setUniforms();
 
-            for (Triangle& j : (cur->models[i])->RTgeometry->elements) {
+            for (Triangle j : (cur->models[i])->RTgeometry->elements) {
                 j.material = ( cur -> models[i] ) -> material;
                 // std::cout << shader->modelview[1].x <<" " << shader->modelview[1].y <<" " << shader->modelview[1].z<< std::endl;
-                // j.position_update(cur_VM) ;
-                
-                j.P[0] = vec3(shader->modelview*vec4(j.P[0],1));
-                j.P[1] = vec3(shader->modelview*vec4(j.P[1],1));
-                j.P[2] = vec3(shader->modelview*vec4(j.P[2],1));
+                mat4 view_inverse = inverse(shader->view);
+                // j.position_update(view_inverse*cur_VM) ;
 
-                j.N[0] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[0],0)));
-                j.N[1] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[1],0)));
-                j.N[2] = vec3(normalize(inverse(transpose(shader->modelview))*vec4(j.N[2],0)));
+                j.P[0] = vec3(view_inverse*shader->modelview*vec4(j.P[0],1));
+                j.P[1] = vec3(view_inverse*shader->modelview*vec4(j.P[1],1));
+                j.P[2] = vec3(view_inverse*shader->modelview*vec4(j.P[2],1));
+
+                j.N[0] = vec3(normalize(inverse(transpose(view_inverse*shader->modelview))*vec4(j.N[0],0)));
+                j.N[1] = vec3(normalize(inverse(transpose(view_inverse*shader->modelview))*vec4(j.N[1],0)));
+                j.N[2] = vec3(normalize(inverse(transpose(view_inverse*shader->modelview))*vec4(j.N[2],0)));
                 std::cout << j.P[0].x <<" " << j.P[0].y <<" " << j.P[0].z<< std::endl;
 
                 triangle_soup.push_back(j);

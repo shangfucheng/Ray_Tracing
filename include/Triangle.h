@@ -11,7 +11,12 @@ Triangle class that stores will contain 3 point coordinates,
 struct Triangle {
 	std::vector<glm::vec3> P; // 3 positions
 	std::vector<glm::vec3> N; // 3 normals
-	Material* material = NULL;
+	Material* material;
+	Triangle(){
+		P = std::vector<glm::vec3>(3);
+		N = std::vector<glm::vec3>(3);
+		material = NULL;
+	}
 	void position_update( glm::mat4 modelView){
 		this->P[0] = glm::vec3(modelView*glm::vec4(this->P[0],1));
         this->P[1] = glm::vec3(modelView*glm::vec4(this->P[1],1));
