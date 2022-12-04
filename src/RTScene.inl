@@ -51,13 +51,13 @@ void RTScene::init(void) {
     //Create a model palette
     RTmodel["teapot1"] = new RTModel;
     RTmodel["teapot1"]->RTgeometry = RTgeometry["teapot"];
-    RTmodel["teapot1"]->material = RTmaterial["silver"];
+    RTmodel["teapot1"]->material = RTmaterial["turquoise"];
     RTmodel["teapot2"] = new RTModel;
     RTmodel["teapot2"]->RTgeometry = RTgeometry["teapot"];
-    RTmodel["teapot2"]->material = RTmaterial["ceramic"];
+    RTmodel["teapot2"]->material = RTmaterial["silver"];
     RTmodel["table piece"] = new RTModel;
     RTmodel["table piece"]->RTgeometry = RTgeometry["cube"];
-    RTmodel["table piece"]->material = RTmaterial["silver"];
+    RTmodel["table piece"]->material = RTmaterial["wood"];
     // RTmodel["bunny"] = new RTModel;
     // RTmodel["bunny"]->RTgeometry = RTgeometry["bunny"];
     // RTmodel["bunny"]->material = RTmaterial["turquoise"];
@@ -67,7 +67,7 @@ void RTScene::init(void) {
 
     // Create a light palette
     light["sun"] = new Light;
-    light["sun"]->position = vec4(3.0f, 2.0f, 1.0f, 0.0f);
+    light["sun"]->position = vec4(0.0f, 2.0f, 1.0f, 0.0f);
     light["sun"]->color = 1.0f * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     light["bulb"] = new Light;
@@ -117,13 +117,13 @@ void RTScene::init(void) {
     RTnode["world"]->childtransforms.push_back(mat4(1.0f));
     // RTnode["world"]->childnodes.push_back(RTnode["bunny"]);
     // RTnode["world"]->childtransforms.push_back(translate(vec3(-1.8f, 0.0f, 0.0f)) * rotate(90.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
-    // RTnode["world"]->models.push_back(RTmodel["bulb"]);
-    // RTnode["world"]->modeltransforms.push_back(translate(vec3(0.0f, 2.0f, 0.0f)) * scale(vec3(0.5f)));
+    RTnode["world"]->models.push_back(RTmodel["bulb"]);
+    RTnode["world"]->modeltransforms.push_back(translate(vec3(0.0f, 2.0f, 0.0f)) * scale(vec3(0.1f)));
 
     // Put a camera
     camera = new Camera;
     camera->target_default = vec3(0.0f, 1.0f, 0.0f);
-    camera->eye_default = vec3(0.0f, 2.0f, 5.0f);
+    camera->eye_default = vec3(-0.5f, 3.f, 4.0f);
     camera->up_default = vec3(0.0f, 1.0f, 0.0f);
     camera->reset();
 

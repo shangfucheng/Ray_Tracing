@@ -138,24 +138,28 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
     }
     
     if (hit.intersect == 1.0) {
+        // glm::vec3 color = glm::vec3(BlinnPhone(hit));
+        // return color;
         for(auto const& l: RTscene.shader->lightpositions){
-            Ray ray_to_light;
-            ray_to_light.p0 = 1.05f*hit.P;
-            ray_to_light.dir = glm::normalize(glm::vec3(l)-hit.P);
-            if(ray_to_lights(ray_to_light)){    // when ray can hit light
-                color = glm::vec3(BlinnPhone(hit));
-                glm::vec4 diffuse_sum = glm::vec4(0.0f);
+            glm::vec4 diffuse_sum = glm::vec4(0.0f);
                 int numLights = RTscene.light.size();
                 for (int i = 0; i < numLights; i++) {
                     color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
                         std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),0.0f) * hit.intersect);
-                }
-                
+            }
+            Ray ray_to_light;
+            ray_to_light.p0 = 1.03f*hit.P;
+            ray_to_light.dir = glm::normalize(glm::vec3(l)-hit.P);
+            if(ray_to_lights(ray_to_light)){    // when ray can hit light
+                // color = glm::vec3(BlinnPhone(hit));
                 Ray reflection;
-                reflection.p0 = hit.P*1.05f;
+                reflection.p0 = hit.P*1.03f;
                 reflection.dir = 2.0f*(glm::dot(hit.N,hit.V))*hit.N-hit.V;
+                // reflection = glm::reflection(p0,)
                 Intersection reflect_hit = Intersect_Scene(reflection, RTscene);
-                color += glm::vec3(hit.triangle.material->specular)*FindColor(RTscene, reflect_hit, --recursion_depth);
+                glm::vec3 color_reflect;// = glm::vec3(BlinnPhone(hit));
+                color_reflect += FindColor(RTscene, reflect_hit, --recursion_depth);
+                color += glm::vec3(hit.triangle.material->specular)* color_reflect;
             }else{  // when there is some triangles in between.
                 color = glm::vec3(0.0f);   // assign black for shadow.
             }
