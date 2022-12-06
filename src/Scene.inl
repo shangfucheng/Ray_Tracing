@@ -75,7 +75,15 @@ void Scene::init(void){
     
     // Build the scene graph
     node["table"] = new Node;
+    node["table2"] = new Node;
     node["table top"] = new Node;
+    node["table top1"] = new Node;
+    node["table top2"] = new Node;
+    node["table top3"] = new Node;
+    node["table top4"] = new Node;
+    node["table top5"] = new Node;
+    node["table top6"] = new Node;
+    node["table top7"] = new Node;
     node["table leg"] = new Node;
     node["teapot1"] = new Node;
     node["teapot2"] = new Node;
@@ -92,7 +100,27 @@ void Scene::init(void){
     node["table"] -> childtransforms.push_back( translate(vec3(0.9f,0.0f,0.4f)) );
     node["table"] -> childnodes.push_back( node["table leg"] );
     node["table"] -> childtransforms.push_back( translate(vec3(0.9f,0.0f,-0.4f)) );
-    
+
+    // bottom wall
+    node["table"] -> childnodes.push_back( node["table top5"] );
+    node["table"] -> childtransforms.push_back( translate(vec3(0.0f,0.0f,-0.05f)) );
+    // Left wall 
+    node["table"] -> childnodes.push_back( node["table top1"] );
+    node["table"] -> childtransforms.push_back( translate(vec3(-4.0f,1.5f,-1.0f))*rotate( -90.0f*float(M_PI)/180.0f, vec3(0.0f, 0.0f, -0.5f) ) );
+    // back wall
+    node["table"] -> childnodes.push_back( node["table top2"] );
+    node["table"] -> childtransforms.push_back( translate(vec3(-4.0f,1.5f,-1.0f))*rotate( -180.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f,1.0f) ) );
+    // right wall
+    node["table"] -> childnodes.push_back( node["table top3"] );
+    node["table"] -> childtransforms.push_back( translate(vec3(4.0f,1.5f,-1.0f))*rotate( -90.0f*float(M_PI)/180.0f, vec3(0.0f, 0.0f, -0.5f) ) );
+    // top wall
+    node["table"] -> childnodes.push_back( node["table top4"] );
+    node["table"] -> childtransforms.push_back( translate(vec3(4.0f,1.5f,-1.0f))*rotate( -180.0f*float(M_PI)/180.0f, vec3(0.0f, 0.0f, -0.5f) ) );
+    // front wall
+    node["table"] -> childnodes.push_back( node["table top6"] );
+    node["table"] -> childtransforms.push_back( translate(vec3(-4.0f,1.5f,5.0f))*rotate( -180.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 1.f) ) );
+  
+
     node["table leg"] -> models.push_back( model["table piece"] );
     node["table leg"] -> modeltransforms.push_back( translate(vec3(0.0f,0.5f,0.0f)) * scale(vec3(0.2f,1.0f,0.2f)) );
     
@@ -103,6 +131,28 @@ void Scene::init(void){
     node["table top"] -> childnodes.push_back( node["teapot2"] );
     node["table top"] -> childtransforms.push_back( translate(vec3( 0.5f,0.0f,0.0f)) * rotate( -120.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ) );
     
+    // bottom wall
+    node["table top5"] -> models.push_back( model["table piece"] );
+    node["table top5"] -> modeltransforms.push_back( translate(vec3(0.0f,-9.f,0.0f)) * scale(vec3(25.0f,0.3f,25.0f)) );
+ 
+    // left wall 
+    node["table top1"] -> models.push_back( model["table piece"] );
+    node["table top1"] -> modeltransforms.push_back( translate(vec3(0.0f,6.f,0.0f)) * scale(vec3(20.0f,0.3f,20.0f)) );
+                                                    // (+=>up -=>down, +=>left -=>right, +=>out -=>in)
+    //back wall
+    node["table top2"] -> models.push_back( model["table piece"] );
+    node["table top2"] -> modeltransforms.push_back( translate(vec3(-4.0f,-9.0f,0.0f)) * scale(vec3(22.0f,0.3f,22.0f)) );
+    //right wall
+    node["table top3"] -> models.push_back( model["table piece"] );
+    node["table top3"] -> modeltransforms.push_back( translate(vec3(0.0f,-6.f,0.0f)) * scale(vec3(20.0f,0.3f,20.0f)) );
+    //top wall
+    node["table top4"] -> models.push_back( model["table piece"] );
+    node["table top4"] -> modeltransforms.push_back( translate(vec3(3.9f,-9.f,0.0f)) * scale(vec3(20.0f,0.3f,20.0f)) );
+    //front wall
+    node["table top6"] -> models.push_back( model["table piece"] );
+    node["table top6"] -> modeltransforms.push_back( translate(vec3(-4.0f,4.f,0.0f)) * scale(vec3(20.0f,0.3f,20.0f)) );
+
+
     node["teapot1"] -> models.push_back( model["teapot1"] );
     node["teapot1"] -> modeltransforms.push_back( scale(vec3(0.5f)) );
     node["teapot2"] -> models.push_back( model["teapot2"] );
@@ -115,13 +165,13 @@ void Scene::init(void){
     node["world"] -> childtransforms.push_back( mat4(1.0f) );
     // node["world"] -> childnodes.push_back( node["bunny"] );
     // node["world"] -> childtransforms.push_back( translate(vec3(-1.8f,0.0f,0.0f)) * rotate( 90.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ));
-    node["world"] -> models.push_back( model["bulb"] );
-    node["world"] -> modeltransforms.push_back( translate(vec3(0.0f,2.0f,0.0f))*scale(vec3(0.1f)) );
+    // node["world"] -> models.push_back( model["bulb"] );
+    // node["world"] -> modeltransforms.push_back( translate(vec3(0.0f,2.0f,0.0f))*scale(vec3(0.1f)) );
     
     // Put a camera
     camera = new Camera;
     camera -> target_default = vec3( 0.0f, 1.0f, 0.0f );
-    camera -> eye_default = vec3( -0.5f, 3.f, 4.0f );
+    camera -> eye_default = vec3( 3.5f, 1.f, 4.0f );
     camera -> up_default = vec3( 0.0f, 1.0f, 0.0f );
     camera -> reset();
     

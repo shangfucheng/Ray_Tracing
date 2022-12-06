@@ -90,7 +90,7 @@ void Camera::computeMatrices(){
 
 void Camera::reset(){
     eye = eye_default;// position of the eye
-    zoom(0.7f);
+    // zoom(9.3f);
     target = target_default;  // look at target
     up = up_default;      // up vector
     fovy = fovy_default;  // field of view in degrees
