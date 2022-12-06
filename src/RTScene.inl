@@ -67,7 +67,7 @@ void RTScene::init(void) {
 
     // Create a light palette
     light["sun"] = new Light;
-    light["sun"]->position = vec4(0.0f, 2.0f, 1.0f, 0.0f);
+    light["sun"]->position = vec4(0.0f, 2.0f, 0.5f, 0.0f);
     light["sun"]->color = 1.0f * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     light["bulb"] = new Light;
@@ -100,9 +100,9 @@ void RTScene::init(void) {
     RTnode["table top"]->models.push_back(RTmodel["table piece"]);
     RTnode["table top"]->modeltransforms.push_back(translate(vec3(0.f, -0.1f, 0.0f)) * scale(vec3(2.0f, 0.2f, 1.0f)));
     RTnode["table top"]->childnodes.push_back(RTnode["teapot1"]);
-    RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f)));
+    RTnode["table top"]->childtransforms.push_back(translate(vec3(-0.5f, 0.0f, 0.0f))*rotate( 50.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ));
     RTnode["table top"]->childnodes.push_back(RTnode["teapot2"]);
-    RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-120.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
+    RTnode["table top"]->childtransforms.push_back(translate(vec3(0.5f, 0.0f, 0.0f)) * rotate(-45.0f * float(M_PI) / 180.0f, vec3(0.0f, 1.0f, 0.0f)));
 
     RTnode["teapot1"]->models.push_back(RTmodel["teapot1"]);
     RTnode["teapot1"]->modeltransforms.push_back(scale(vec3(0.5f)));

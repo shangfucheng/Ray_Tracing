@@ -99,9 +99,9 @@ void Scene::init(void){
     node["table top"] -> models.push_back( model["table piece"] );
     node["table top"] -> modeltransforms.push_back( translate(vec3(0.0f,-0.1f,0.0f)) * scale(vec3(2.0f,0.2f,1.0f)) );
     node["table top"] -> childnodes.push_back( node["teapot1"] );
-    node["table top"] -> childtransforms.push_back( translate(vec3(-0.5f,0.0f,0.0f)) );
+    node["table top"] -> childtransforms.push_back( translate(vec3(-0.5f,0.0f,0.0f)) *rotate( 50.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ) );
     node["table top"] -> childnodes.push_back( node["teapot2"] );
-    node["table top"] -> childtransforms.push_back( translate(vec3( 0.5f,0.0f,0.0f)) * rotate( -120.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ) );
+    node["table top"] -> childtransforms.push_back( translate(vec3( 0.5f,0.0f,0.0f)) * rotate( -45.0f*float(M_PI)/180.0f, vec3(0.0f, 1.0f, 0.0f) ) );
     
     node["teapot1"] -> models.push_back( model["teapot1"] );
     node["teapot1"] -> modeltransforms.push_back( scale(vec3(0.5f)) );

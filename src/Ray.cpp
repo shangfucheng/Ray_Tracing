@@ -81,41 +81,41 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
     /*** 
      * function to add lighting using BlinnPhone.
     ***/
-    std::function<glm::vec4(Intersection)> BlinnPhone = [&](Intersection hit) {
-        glm::vec4 fragColor;
-        glm::vec3 normal = hit.N;
-        glm::mat4 modelview = RTscene.shader->modelview;
-        glm::vec4 position = glm::vec4(hit.P,1.f);
-        glm::vec4 sumLight = glm::vec4(0.0f);
-        int nlights = RTscene.light.size();
-        std::vector<glm::vec4> lightpositions = RTscene.shader->lightpositions;
-        glm::mat4 view = RTscene.shader->view;
-        glm::vec4 ambient = hit.triangle.material->ambient;
-        glm::vec4 diffuse = hit.triangle.material->diffuse;
-        glm::vec4 specular = hit.triangle.material->specular;
-        float shininess = hit.triangle.material->shininess;
-        glm::vec4 emision = hit.triangle.material->emision;
-        std::vector<glm::vec4> lightcolors = RTscene.shader->lightcolors;
-        glm::vec3 normal_camera = glm::normalize(glm::transpose(glm::inverse(glm::mat3(modelview))) * normal);
-        glm::vec4 position_camera = modelview * position;
-        glm::vec3 view_cam = glm::normalize(glm::vec3(-position_camera)); // vec3(-position_camera) or will have pixels off.
-        // normalize vec4 and vec3 will make slight different.
+    // std::function<glm::vec4(Intersection)> BlinnPhone = [&](Intersection hit) {
+    //     glm::vec4 fragColor;
+    //     glm::vec3 normal = hit.N;
+    //     glm::mat4 modelview = RTscene.shader->modelview;
+    //     glm::vec4 position = glm::vec4(hit.P,1.f);
+    //     glm::vec4 sumLight = glm::vec4(0.0f);
+    //     int nlights = RTscene.light.size();
+    //     std::vector<glm::vec4> lightpositions = RTscene.shader->lightpositions;
+    //     glm::mat4 view = RTscene.shader->view;
+    //     glm::vec4 ambient = hit.triangle.material->ambient;
+    //     glm::vec4 diffuse = hit.triangle.material->diffuse;
+    //     glm::vec4 specular = hit.triangle.material->specular;
+    //     float shininess = hit.triangle.material->shininess;
+    //     glm::vec4 emision = hit.triangle.material->emision;
+    //     std::vector<glm::vec4> lightcolors = RTscene.shader->lightcolors;
+    //     glm::vec3 normal_camera = glm::normalize(glm::transpose(glm::inverse(glm::mat3(modelview))) * normal);
+    //     glm::vec4 position_camera = modelview * position;
+    //     glm::vec3 view_cam = glm::normalize(glm::vec3(-position_camera)); // vec3(-position_camera) or will have pixels off.
+    //     // normalize vec4 and vec3 will make slight different.
 
-        for (int j = 0; j < nlights; j++) {
-            glm::vec4 lightPos_camera = view * lightpositions[j];
+    //     for (int j = 0; j < nlights; j++) {
+    //         glm::vec4 lightPos_camera = view * lightpositions[j];
 
-            glm::vec3 lightPos_dir_cam = glm::normalize(position_camera.w * glm::vec3(lightPos_camera) -
-                lightPos_camera.w * glm::vec3(position_camera)); // l_j
+    //         glm::vec3 lightPos_dir_cam = glm::normalize(position_camera.w * glm::vec3(lightPos_camera) -
+    //             lightPos_camera.w * glm::vec3(position_camera)); // l_j
 
-            glm::vec3 h_j = normalize(view_cam + lightPos_dir_cam);
+    //         glm::vec3 h_j = normalize(view_cam + lightPos_dir_cam);
 
-            sumLight += (ambient + diffuse * std::max(glm::dot(normal_camera, lightPos_dir_cam), (float)0.0) +
-                specular * (std::max(pow(dot(normal_camera, h_j), shininess), (float)0.0))) * lightcolors[j];
-        }
+    //         sumLight += (ambient + diffuse * std::max(glm::dot(normal_camera, lightPos_dir_cam), (float)0.0) +
+    //             specular * (std::max(pow(dot(normal_camera, h_j), shininess), (float)0.0))) * lightcolors[j];
+    //     }
 
-        fragColor = emision + sumLight;
-        return fragColor;
-    };
+    //     fragColor = emision + sumLight;
+    //     return fragColor;
+    // };
 
     /***
      * function to check shadows
