@@ -1,14 +1,33 @@
 
 #include "Ray.h"
-#include <iostream>
+
+static std::mutex s_pixelMutex;
+
+static void MultiThreading(int i, int j, int w, int h, Image* image, Camera* cam, RTScene RTscene){
+    RayTracer rt;
+    Ray ray = rt.RayThruPixel(cam, i, j, w, h);
+    Intersection hit = rt.Intersect_Scene(ray, RTscene);
+    glm::vec3 color = rt.FindColor(RTscene, hit, 5);
+    std::lock_guard<std::mutex> lock(s_pixelMutex); // lock thread for access vector one at a time
+    image->pixel[j*w+i] = color;
+    if(!rt.m_Futures.empty())rt.m_Futures.pop_back();
+}
 
 void RayTracer::Raytrace(Camera* cam, RTScene &RTscene, Image& image) {
+    const auto thread_count = std::thread::hardware_concurrency();
+    std::cout << thread_count << std::endl;
     int w = image.width; int h = image.height;
     for (int j = 0; j < h; j++) {
         for (int i = 0; i < w; i++) {
+        #define ASYNC 1
+        #if ASYNC
+            if(m_Futures.size() > thread_count) m_Futures.clear();
+            m_Futures.push_back(std::async(std::launch::async,MultiThreading,i,j,w,h,&image,cam,RTscene));
+        #else            
             Ray ray = RayThruPixel(cam, i, j, w, h);
             Intersection hit = Intersect_Scene(ray, RTscene);
             image.pixel[j*w+i] = FindColor(RTscene, hit, 5);
+        #endif
         }
         std::cout << j << std::endl;
     }
@@ -60,7 +79,7 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
 }
 
 Intersection RayTracer::Intersect_Scene(Ray ray, RTScene &RTscene) {
-    float mindist = INFINITY;//std::numeric_limits<float>::infinity();   // distance
+    float mindist = INFINITY; //std::numeric_limits<float>::infinity();   // distance
     Intersection hit;
     for (Triangle tri : RTscene.triangle_soup) { // Find closest intersection; test all objects       
         Intersection hit_temp = Intersect_Triangle(ray, tri); // intersect triangle
@@ -76,41 +95,41 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
     /*** 
      * function to add lighting using BlinnPhone.
     ***/
-    // std::function<glm::vec4(Intersection)> BlinnPhone = [&](Intersection hit) {
-    //     glm::vec4 fragColor;
-    //     glm::vec3 normal = hit.N;
-    //     glm::mat4 modelview = RTscene.shader->modelview;
-    //     glm::vec4 position = glm::vec4(hit.P,1.f);
-    //     glm::vec4 sumLight = glm::vec4(0.0f);
-    //     int nlights = RTscene.light.size();
-    //     std::vector<glm::vec4> lightpositions = RTscene.shader->lightpositions;
-    //     glm::mat4 view = RTscene.shader->view;
-    //     glm::vec4 ambient = hit.triangle.material->ambient;
-    //     glm::vec4 diffuse = hit.triangle.material->diffuse;
-    //     glm::vec4 specular = hit.triangle.material->specular;
-    //     float shininess = hit.triangle.material->shininess;
-    //     glm::vec4 emision = hit.triangle.material->emision;
-    //     std::vector<glm::vec4> lightcolors = RTscene.shader->lightcolors;
-    //     glm::vec3 normal_camera = glm::normalize(glm::transpose(glm::inverse(glm::mat3(modelview))) * normal);
-    //     glm::vec4 position_camera = modelview * position;
-    //     glm::vec3 view_cam = glm::normalize(glm::vec3(-position_camera)); // vec3(-position_camera) or will have pixels off.
-    //     // normalize vec4 and vec3 will make slight different.
+    std::function<glm::vec4(Intersection)> BlinnPhone = [&](Intersection hit) {
+        glm::vec4 fragColor;
+        glm::vec3 normal = hit.N;
+        glm::mat4 modelview = RTscene.shader->modelview;
+        glm::vec4 position = glm::vec4(hit.P,1.f);
+        glm::vec4 sumLight = glm::vec4(0.0f);
+        int nlights = RTscene.light.size();
+        std::vector<glm::vec4> lightpositions = RTscene.shader->lightpositions;
+        glm::mat4 view = RTscene.shader->view;
+        glm::vec4 ambient = hit.triangle.material->ambient;
+        glm::vec4 diffuse = hit.triangle.material->diffuse;
+        glm::vec4 specular = hit.triangle.material->specular;
+        float shininess = hit.triangle.material->shininess;
+        glm::vec4 emision = hit.triangle.material->emision;
+        std::vector<glm::vec4> lightcolors = RTscene.shader->lightcolors;
+        glm::vec3 normal_camera = glm::normalize(glm::transpose(glm::inverse(glm::mat3(modelview))) * normal);
+        glm::vec4 position_camera = modelview * position;
+        glm::vec3 view_cam = glm::normalize(glm::vec3(-position_camera)); // vec3(-position_camera) or will have pixels off.
+        // normalize vec4 and vec3 will make slight different.
 
-    //     for (int j = 0; j < nlights; j++) {
-    //         glm::vec4 lightPos_camera = view * lightpositions[j];
+        for (int j = 0; j < nlights; j++) {
+            glm::vec4 lightPos_camera = view * lightpositions[j];
 
-    //         glm::vec3 lightPos_dir_cam = glm::normalize(position_camera.w * glm::vec3(lightPos_camera) -
-    //             lightPos_camera.w * glm::vec3(position_camera)); // l_j
+            glm::vec3 lightPos_dir_cam = glm::normalize(position_camera.w * glm::vec3(lightPos_camera) -
+                lightPos_camera.w * glm::vec3(position_camera)); // l_j
 
-    //         glm::vec3 h_j = normalize(view_cam + lightPos_dir_cam);
+            glm::vec3 h_j = normalize(view_cam + lightPos_dir_cam);
 
-    //         sumLight += (ambient + diffuse * std::max(glm::dot(normal_camera, lightPos_dir_cam), (float)0.0) +
-    //             specular * (std::max(pow(dot(normal_camera, h_j), shininess), (float)0.0))) * lightcolors[j];
-    //     }
+            sumLight += (ambient + diffuse * std::max(glm::dot(normal_camera, lightPos_dir_cam), (float)0.0) +
+                specular * (std::max(pow(dot(normal_camera, h_j), shininess), (float)0.0))) * lightcolors[j];
+        }
 
-    //     fragColor = emision + sumLight;
-    //     return fragColor;
-    // };
+        fragColor = emision + sumLight;
+        return fragColor;
+    };
 
     /***
      * function to check shadows
@@ -133,51 +152,28 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
     }
     
     if (hit.intersect == 1.0) {
-        // glm::vec3 color = glm::vec3(BlinnPhone(hit));
-        // return color;
         for(auto const& l: RTscene.shader->lightpositions){
-            glm::vec4 diffuse_sum = glm::vec4(0.0f);
-                int numLights = RTscene.light.size();
-                for (int i = 0; i < numLights; i++) {
-                    color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
-                        std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),0.0f) * hit.intersect);
+            int numLights = RTscene.light.size();
+            for (int i = 0; i < numLights; i++) {
+                color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
+                    std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),0.0f) * hit.intersect);
             }
             Ray ray_to_light;
             ray_to_light.p0 = 1.03f*hit.P;
             ray_to_light.dir = glm::normalize(glm::vec3(l)-hit.P);
             if(ray_to_lights(ray_to_light)){    // when ray can hit light
-                // color = glm::vec3(BlinnPhone(hit));
                 Ray reflection;
                 reflection.p0 = hit.P*1.03f;
                 reflection.dir = 2.0f*(glm::dot(hit.N,hit.V))*hit.N-hit.V;
-                // reflection = glm::reflection(p0,)
                 Intersection reflect_hit = Intersect_Scene(reflection, RTscene);
-                glm::vec3 color_reflect;// = glm::vec3(BlinnPhone(hit));
+                glm::vec3 color_reflect = glm::vec3(0.f);// = glm::vec3(BlinnPhone(hit));
                 color_reflect += FindColor(RTscene, reflect_hit, --recursion_depth);
                 color += glm::vec3(hit.triangle.material->specular)* color_reflect;
             }else{  // when there is some triangles in between.
-                color = glm::vec3(0.0f);   // assign black for shadow.
+                // color = glm::vec3(0.0f);   // assign black for shadow.
+                color = glm::vec3(hit.triangle.material->ambient);
             }
         }
-        
-        // std::cout << "depth " << recursion_depth << std::endl;
-        // std::cout << hit.triangle.P[1].x << " " << hit.triangle.P[1].y << std::endl;
-        // color = glm::vec3(0.8,0.8,0.1);
-
-
-        // color = glm::vec3(glm::normalize(BlinnPhone(hit)));
-        // glm::vec4 diffuse_sum = glm::vec4(0.0f);
-        // int numLights = RTscene.light.size();
-
-        // for (int i = 0; i < numLights; i++) {
-        //     color += glm::vec3(hit.triangle.material->diffuse* RTscene.shader->lightcolors[i] *
-        //         std::max(glm::dot(hit.N, glm::vec3(RTscene.shader->lightpositions[i])),(float)0) * hit.intersect);
-
-        // }
-        
     }
-
-   
-    //std::cout << color.x << " " << color.y << " " << color.z << std::endl;
     return color;
 }

@@ -18,8 +18,8 @@
 #include "Image.h"
 #include "Ray.h"
 
-static const int width = 800;
-static const int height = 800;
+static const int width = 200;
+static const int height = 200;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static RTScene RTscene;
@@ -78,7 +78,8 @@ void saveScreenShot(const char* filename = "test.png"){
 
 void image_display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    RayTracer::Raytrace(RTscene.camera, RTscene, image);
+    RayTracer rt;
+    rt.Raytrace(RTscene.camera, RTscene, image);
     image.draw();
     glutSwapBuffers();
     glFlush();

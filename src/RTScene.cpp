@@ -75,8 +75,6 @@ void RTScene::buildTriangleSoup() {
                 j.N[0] = vec3(normalize(inverse(transpose(view_inverse*shader->modelview))*vec4(j.N[0],0)));
                 j.N[1] = vec3(normalize(inverse(transpose(view_inverse*shader->modelview))*vec4(j.N[1],0)));
                 j.N[2] = vec3(normalize(inverse(transpose(view_inverse*shader->modelview))*vec4(j.N[2],0)));
-                std::cout << j.P[0].x <<" " << j.P[0].y <<" " << j.P[0].z<< std::endl;
-
                 triangle_soup.push_back(j);
             }
         }
