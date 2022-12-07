@@ -9,7 +9,6 @@ void RayTracer::Raytrace(Camera* cam, RTScene &RTscene, Image& image) {
             Ray ray = RayThruPixel(cam, i, j, w, h);
             Intersection hit = Intersect_Scene(ray, RTscene);
             image.pixel[j*w+i] = FindColor(RTscene, hit, 5);
-            // std::cout << image.pixel[j*w+i].x << " "<< image.pixel[j*w+i].y << " " << image.pixel[j*w+i].z << std::endl;
         }
         std::cout << j << std::endl;
     }
@@ -32,7 +31,6 @@ Ray RayTracer::RayThruPixel(Camera* cam, int i, int j, int width, int height) {
     // world coord
     ray.p0 = cam->eye;
     ray.dir = glm::normalize(alpha * aspect * glm::tan(fovy_rad/2.0f) * u - beta * glm::tan(fovy_rad/2.0f) * v - w);
-    // std::cout << ray.dir.x <<" "<< ray.dir.y << " " <<ray.dir.z << std::endl;
     return ray;
 }
 
@@ -49,7 +47,6 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
     glm::vec4 p0 = glm::vec4(ray.p0, 1.0f); // in world coord
 
     glm::vec4 coefficient = glm::inverse(tri)*p0; 
-    // std::cout << coefficient.x << " " << coefficient.y << " " << coefficient.z << " " << coefficient.w << std::endl;
     if (coefficient.x >= 0 && coefficient.y >= 0 && coefficient.z >= 0 && coefficient.w >= 0) {
         hit_point.P = coefficient.x * triangle.P[0] + coefficient.y * triangle.P[1] + coefficient.z * triangle.P[2]; // intersection positoin
         // hit_point.P = glm::vec3(p0)+coefficient.w*ray.dir;
@@ -58,7 +55,6 @@ Intersection RayTracer::Intersect_Triangle(Ray ray, Triangle& triangle) {
         hit_point.V = -ray.dir; // direction of incoming ray
         hit_point.triangle = triangle;
         hit_point.intersect = 1.0;
-        // std::cout << triangle.P[0].x << " " << triangle.P[0].y << " " <<triangle.P[0].z << " " <<std::endl;
     }
     return hit_point;
 }
@@ -71,7 +67,6 @@ Intersection RayTracer::Intersect_Scene(Ray ray, RTScene &RTscene) {
         if (hit_temp.dist < mindist) { // closer than previous hit
             mindist = hit_temp.dist;
             hit = hit_temp;
-            // std::cout << mindist << std::endl;
         }
     }
     return hit;

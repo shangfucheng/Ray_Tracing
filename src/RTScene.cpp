@@ -58,7 +58,6 @@ void RTScene::buildTriangleSoup() {
         for (size_t i = 0; i < cur->models.size(); i++) {
             // Prepare to draw the geometry. Assign the modelview and the material.
             // Without updating cur_VM, modelview would just be camera's view matrix.
-            // shader->modelview = cur_VM * cur->modeltransforms[i]; 
 
             shader -> modelview = cur_VM * cur->modeltransforms[i]; // Without updating cur_VM, modelview would just be camera's view matrix.
             shader -> material  = ( cur -> models[i] ) -> material;
@@ -66,7 +65,6 @@ void RTScene::buildTriangleSoup() {
 
             for (Triangle j : (cur->models[i])->RTgeometry->elements) {
                 j.material = ( cur -> models[i] ) -> material;
-                // std::cout << shader->modelview[1].x <<" " << shader->modelview[1].y <<" " << shader->modelview[1].z<< std::endl;
                 mat4 view_inverse = inverse(shader->view);
                 // j.position_update(view_inverse*cur_VM) ;
 
@@ -81,7 +79,6 @@ void RTScene::buildTriangleSoup() {
 
                 triangle_soup.push_back(j);
             }
-            // shader -> modelview = cur_VM * cur->modeltransforms[i];
         }
         // Continue the DFS: put all the child nodes of the current node in the stack
         for (size_t i = 0; i < cur->childnodes.size(); i++) {
