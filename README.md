@@ -1,13 +1,16 @@
 <h1>Ray Tracing (Casting)</h1>
 <h2 style="color:red"> Demonstration:</h2>
 <div>
-The first image is how the scene looks with Blinnephone coloring.
+The first image is how the scene looks with Blinnephone Shading.
 <img src="./test7.png"
      style="float: left; margin-right: 10px;" />
 </div>
 The following image is the result after rendering the scene with ray tracing and mirror reflections.
 <img src="./test6.png"
      style="float: left; margin-right: 10px;" />
+</div>
+<div>
+We can see the ray tracing scene has the mirror reflection effect and the shadow as well, while light source at the middle top, the table top and both teapot has bright colors and the place that light can not reach, are more dark just like how shadows look like. The left teapot has material "ceramic" and right teapot has material "silver", table has material "wood", based on the material, they have different reflection effect. For "silver" we can see a more clear reflection of another teapot, and the "ceramic" teapot has a more blur reflection of the right teapot. Obviously that wood has the less reflection, but if we zoom in little more, we can still see some reflection on it which is very similar to how real lighting works. Similar to the shadows, the front of the table and table legs are not directly reachable by light, so they are darker compare to the table top. and the shadow of both teapot also demonstrated a shadow effect of real lighting which is what we are looing for by using ray tracing. 
 </div>
 
 <h2 style="color:red"> Write Up:</h2>
@@ -18,7 +21,7 @@ The following image is the result after rendering the scene with ray tracing and
 </div>
 <div>
 <p>
-In order to accomplish the functionality of ray tracing, here I created 5 core functions: 
+Before start with the Raytrace functions, we first need to creat a vector of Triangle triangel_soup that stores all the triangles of the scene. So instead of add each object to vertex buffer, we have to manually add all triangles into Geometry->elements. While building the scene by dfs, we can update the triangle material, position and normal, then push it into triangle_soup. Once we have all the triangles stored, we can look at the 5 core functions for ray tracing: 
     <img src="./write_up_img/core_funcs.png"
      style="float: left; margin-right: 10px;" />
 </p>
