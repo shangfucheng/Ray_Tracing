@@ -8,9 +8,9 @@
 <div>
 <p>
 In order to accomplish the functionality of ray tracing, here I created 5 core functions: 
-![alt text](./write_up_img/core_funcs.png?raw=true)
 </p>
 </div>
+![alt text](./write_up_img/core_funcs.png?raw=true)
 <div>
 <h3 style="color:skyblue">void Raytrace(Camera* cam, RTScene &RTscene, Image& image)</h3><br>
 <p>
