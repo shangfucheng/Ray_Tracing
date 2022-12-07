@@ -29,11 +29,19 @@ The parameters passed into this function are Camera pointer, Scene, and Image. C
 The parameters passed into this function are Camera pointer that points to Scene camera, and i, j are the index of current pixel, width and height is screen width and height.
 </p>
 <p>
-In RayThruPixel function, we basically return a Ray from Camera through current pixel, In order to do so, we have to first calculate the Camera vectors, ![alt text](./write_up_img/cam_vec.png?raw=true).
+In RayThruPixel function, we basically return a Ray from Camera through current pixel, In order to do so, we have to first calculate the Camera vectors, 
+    <img src="./write_up_img/cam_vec.png"
+     style="float: left; margin-right: 10px;" />
 w is eye to target vector, u is the up vector and v is the right vector, all 3 vectors need to be normalized. 
-![alt text](./write_up_img/cam_angle.png?raw=true)
-Then we can have the aspect ratio, field of view information from Camera. Since we want the ray to shoot through the center of the pixel, here is what we need to do. ![alt text](./write_up_img/pixel_center.png?raw=true).
-Once we have all the values ready, we need to decide whether to do this in world space or camera space. World space is easier and is what I did. So I set the ray position to eye position, and direction is calculated by this formula ![alt text](./write_up_img/ray_dir.png?raw=true). Once we calculated the ray, we can return it and pass it into the next function Intersection Intersect_Triangle. 
+    <img src="./write_up_img/cam_angle.png"
+     style="float: left; margin-right: 10px;" />
+Then we can have the aspect ratio, field of view information from Camera. Since we want the ray to shoot through the center of the pixel, here is what we need to do. 
+    <img src="./write_up_img/pixel_center.png"
+     style="float: left; margin-right: 10px;" />
+Once we have all the values ready, we need to decide whether to do this in world space or camera space. World space is easier and is what I did. So I set the ray position to eye position, and direction is calculated by this formula .
+     <img src="./write_up_img/ray_dir.png"
+     style="float: left; margin-right: 10px;" />
+    Once we calculated the ray, we can return it and pass it into the next function Intersection Intersect_Triangle. 
 </p>
 
 </div>
@@ -56,7 +64,9 @@ In Intersect_Scene function, we need to find the closest hit of the Ray, here wh
 The parameters passed into this function are the Ray that generated from Intersect_Scene function, intersection triangle.
 </p>
 <p>
-In Intersect_Triangle function, we need to check whether the ray is intersect with the triangle, I used the following equations, ![alt text](./write_up_img/tri_intersect.png?raw=true). 
+In Intersect_Triangle function, we need to check whether the ray is intersect with the triangle, I used the following equations, 
+    <img src="./write_up_img/tri_intersect.png"
+     style="float: left; margin-right: 10px;" />
 </p>
 
 </div>
