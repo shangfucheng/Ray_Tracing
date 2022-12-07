@@ -10,6 +10,7 @@ The following image is the result after rendering the scene with ray tracing and
      style="float: left; margin-right: 10px;" />
 </div>
 
+
 <div>
 <p>
     Instead of using rasterization, here I'm using Ray Casting to iterate every pixels, shoot a ray through each pixel, and find the closest intersect triangle in every geometry in the scene. Then for each intersected triangle, we need to create a second ray shoot from the hit point to light sources to check for visibility, this will find the shadow if it's not visible by the light. A problem for find shadow is to avoid self-shadow, which will give a bunch of black dots in the scene. To avoid self-shadow, we simply move the hit point a little, in my case, I multiplied hit position by 1.03 and it worked just find. Next is reflection, reflection will need another ray shoots out from the hit point, based on the material normal, it will have different reflected direction. For the reflection, I did recursively with recursion depth 5. Since reflection may never stop, so we need to force it to stop with maximum recursion depth.
