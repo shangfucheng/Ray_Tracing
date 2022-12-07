@@ -1,4 +1,14 @@
 <h1>Ray Tracing (Casting)</h1>
+<h2 style="color:red"> Demonstration:</h2>
+<div>
+The first image is how the scene looks with Blinnephone coloring.
+<img src="./test7.png"
+     style="float: left; margin-right: 10px;" />
+</div>
+The following image is the result after rendering the scene with ray tracing and mirror reflections.
+<img src="./test6.png"
+     style="float: left; margin-right: 10px;" />
+</div>
 
 <div>
 <p>
@@ -82,13 +92,22 @@ Intersection distance is t, Incoming ray direction is negative of ray direction.
 The parameters passed into this function are the Scene, Intersectin returned from Intersect_Scene, and the maximum recursion depth.
 </h4>
 <p>
-In FindColor function, it need to return a color for each pixel based on the passed in parameters. First create color with background color value, then check if the hit are actually intersect with any triangles, if no just return background color for this pixel. If there is a hit, then we need to give it ambient color fist, then generate another Ray that shoot directly to all the light sources by Calling the function Intersection Intersect_Scene(Ray ray, RTScene &RTscene). To avoid self-shadow, I times the Ray position by 1.03 to move it a little bit. If there is a hit, which means that something is blocking the triangle to reach the light sources, then it should be shadow, so give it black color vec3(0.f).
+In FindColor function, it need to return a color for each pixel based on the passed in parameters. First create color with background color value, then check if the hit are actually intersect with any triangles, if no just return background color for this pixel. If there is a hit, then we need to give it ambient color with diffuse color from all ligth sources. A general equation is as below,
+<img src="./write_up_img/diffuse.png"
+     style="float: left; margin-right: 10px;" />.
+Next we need to check for shadows, generate another Ray that shoot directly to all the light sources by Calling the function Intersection Intersect_Scene(Ray ray, RTScene &RTscene). To avoid self-shadow, I times the Ray position by 1.03 to move it a little bit. If there is a hit, which means that something is blocking the triangle to reach the light sources, then it should be shadow, so give it black color vec3(0.f).
 </p>
 <p>
 Once done with checking shadows, next is generate a new Ray for mirror reflection. start at the same position, the direction of reflection are calculated as following,
 <img src="./write_up_img/reflect_dir.png"
      style="float: left; margin-right: 10px;" />
 After create the reflection Ray, we will check for hit by calling function Intersection Intersect_Scene(Ray ray, RTScene &RTscene) again. Then call Find color recursively with the reflection hit information. the recursion will stop if there is no hit or reach the maximum recursive depth.
+Now, we need to add the specular color with the reflection color based on the following equation,
+<img src="./write_up_img/color_equa.png"
+     style="float: left; margin-right: 10px;" />
+</p>
+<p>
+Return color will either return background color, shadow color, or the calculated final color, which gives the mirror reflect effect.
 </p>
 
 </div>
