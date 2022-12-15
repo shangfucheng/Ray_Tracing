@@ -18,8 +18,8 @@
 #include "Image.h"
 #include "Ray.h"
 
-static const int width = 200;
-static const int height = 200;
+static const int width = 600;
+static const int height = 600;
 static const char* title = "Scene viewer";
 static const glm::vec4 background(0.1f, 0.2f, 0.3f, 1.0f);
 static RTScene RTscene;
@@ -40,7 +40,7 @@ void printHelp(){
       press 'A'/'Z' to zoom.
       press 'R' to reset camera.
       press 'L' to turn on/off the lighting.
-    
+      press 'I' for Ray tracing Image, takes long time to load.
       press Spacebar to generate images for hw3 submission.
     
 )";

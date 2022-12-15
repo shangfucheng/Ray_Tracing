@@ -169,10 +169,12 @@ glm::vec3 RayTracer::FindColor(RTScene &RTscene, Intersection hit, int recursion
                 glm::vec3 color_reflect = glm::vec3(0.f);// = glm::vec3(BlinnPhone(hit));
                 color_reflect += FindColor(RTscene, reflect_hit, --recursion_depth);
                 color += glm::vec3(hit.triangle.material->specular)* color_reflect;
-            }else{  // when there is some triangles in between.
+            }
+            else{  // when there is some triangles in between.
                 // color = glm::vec3(0.0f);   // assign black for shadow.
                 color = glm::vec3(hit.triangle.material->ambient);
             }
+            
         }
     }
     return color;
